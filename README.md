@@ -4,7 +4,7 @@
 [![e2e](https://github.com/fluxcd/flux2-kustomize-helm-example/workflows/e2e/badge.svg)](https://github.com/fluxcd/flux2-kustomize-helm-example/actions)
 [![license](https://img.shields.io/github/license/fluxcd/flux2-kustomize-helm-example.svg)](https://github.com/fluxcd/flux2-kustomize-helm-example/blob/main/LICENSE)
 
-For this example we assume a scenario with two clusters: staging and production.
+For this example we assume a scenario with two clusters: stage and prod.
 The end goal is to leverage Flux and Kustomize to manage both clusters while minimizing duplicated declarations.
 
 We will configure Flux to install, test and upgrade a demo app using
@@ -44,20 +44,20 @@ curl -s https://fluxcd.io/install.sh | sudo bash
 The Git repository contains the following top directories:
 
 - **apps** dir contains Helm releases with a custom configuration per cluster
-- **infrastructure** dir contains common infra tools such as ingress-nginx and cert-manager
+- **infrastructure** dir contains common infra tools like weave-gitops
 - **clusters** dir contains the Flux configuration per cluster
 
 ```
 ├── apps
 │   ├── base
-│   ├── production 
-│   └── staging
+│   ├── prod 
+│   └── stage
 ├── infrastructure
 │   ├── configs
 │   └── controllers
 └── clusters
-    ├── production
-    └── staging
+    ├── prod
+    └── stage
 ```
 
 ### Applications
@@ -65,8 +65,8 @@ The Git repository contains the following top directories:
 The apps configuration is structured into:
 
 - **apps/base/** dir contains namespaces and Helm release definitions
-- **apps/production/** dir contains the production Helm release values
-- **apps/staging/** dir contains the staging values
+- **apps/prod/** dir contains the prod Helm release values
+- **apps/stage/** dir contains the stage values
 
 ```
 ./apps/
@@ -76,10 +76,10 @@ The apps configuration is structured into:
 │       ├── namespace.yaml
 │       ├── release.yaml
 │       └── repository.yaml
-├── production
+├── prod
 │   ├── kustomization.yaml
 │   └── podinfo-patch.yaml
-└── staging
+└── stage
     ├── kustomization.yaml
     └── podinfo-patch.yaml
 ```
@@ -108,7 +108,7 @@ spec:
       className: nginx
 ```
 
-In **apps/staging/** dir we have a Kustomize patch with the staging specific values:
+In **apps/stage/** dir we have a Kustomize patch with the stage specific values:
 
 ```yaml
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
@@ -124,13 +124,13 @@ spec:
   values:
     ingress:
       hosts:
-        - host: podinfo.staging
+        - host: podinfo.stage
 ```
 
 Note that with ` version: ">=1.0.0-alpha"` we configure Flux to automatically upgrade
 the `HelmRelease` to the latest chart version including alpha, beta and pre-releases.
 
-In **apps/production/** dir we have a Kustomize patch with the production specific values:
+In **apps/prod/** dir we have a Kustomize patch with the prod specific values:
 
 ```yaml
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
@@ -145,7 +145,7 @@ spec:
   values:
     ingress:
       hosts:
-        - host: podinfo.production
+        - host: podinfo.prod
 ```
 
 Note that with ` version: ">=1.0.0"` we configure Flux to automatically upgrade
@@ -161,63 +161,14 @@ The infrastructure is structured into:
 ```
 ./infrastructure/
 ├── configs
-│   ├── cluster-issuers.yaml
 │   ├── network-policies.yaml
 │   └── kustomization.yaml
 └── controllers
-    ├── cert-manager.yaml
-    ├── ingress-nginx.yaml
     ├── weave-gitops.yaml
     └── kustomization.yaml
 ```
 
-In **infrastructure/controllers/** dir we have the Flux `HelmRepository` and `HelmRelease` definitions such as:
-
-```yaml
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
-kind: HelmRelease
-metadata:
-  name: cert-manager
-  namespace: cert-manager
-spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: cert-manager
-      version: "1.x"
-      sourceRef:
-        kind: HelmRepository
-        name: cert-manager
-        namespace: cert-manager
-      interval: 12h
-  values:
-    installCRDs: true
-```
-
-Note that with ` interval: 12h` we configure Flux to pull the Helm repository index every twelfth hours to check for updates.
-If the new chart version that matches the `1.x` semver range is found, Flux will upgrade the release.
-
-In **infrastructure/configs/** dir we have Kubernetes custom resources, such as the Let's Encrypt issuer:
-
-```yaml
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: letsencrypt
-spec:
-  acme:
-    # Replace the email address with your own contact email
-    email: fluxcdbot@users.noreply.github.com
-    server: https://acme-staging-v02.api.letsencrypt.org/directory
-    privateKeySecretRef:
-      name: letsencrypt-nginx
-    solvers:
-      - http01:
-          ingress:
-            class: nginx
-```
-
-In **clusters/production/infrastructure.yaml** we replace the Let's Encrypt server value to point to the production API:
+In **clusters/prod/infrastructure.yaml** we replace the Let's Encrypt server value to point to the prod API:
 
 ```yaml
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
@@ -242,21 +193,21 @@ spec:
 Note that with `dependsOn` we tell Flux to first install or upgrade the controllers and only then the configs.
 This ensures that the Kubernetes CRDs are registered on the cluster, before Flux applies any custom resources.
 
-## Bootstrap staging and production
+## Bootstrap stage and prod
 
 The clusters dir contains the Flux configuration:
 
 ```
 ./clusters/
-├── production
+├── prod
 │   ├── apps.yaml
 │   └── infrastructure.yaml
-└── staging
+└── stage
     ├── apps.yaml
     └── infrastructure.yaml
 ```
 
-In **clusters/staging/** dir we have the Flux Kustomization definitions, for example:
+In **clusters/stage/** dir we have the Flux Kustomization definitions, for example:
 
 ```yaml
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
@@ -271,12 +222,12 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./apps/staging
+  path: ./apps/stage
   prune: true
   wait: true
 ```
 
-Note that with `path: ./apps/staging` we configure Flux to sync the staging Kustomize overlay and 
+Note that with `path: ./apps/stage` we configure Flux to sync the stage Kustomize overlay and 
 with `dependsOn` we tell Flux to create the infrastructure items before deploying the apps.
 
 Fork this repository on your personal GitHub account and export your GitHub access token, username and repo name:
@@ -287,64 +238,50 @@ export GITHUB_USER=<your-username>
 export GITHUB_REPO=<repository-name>
 ```
 
-Verify that your staging cluster satisfies the prerequisites with:
+Verify that your stage cluster satisfies the prerequisites with:
 
 ```sh
 flux check --pre
 ```
 
-Set the kubectl context to your staging cluster and bootstrap Flux:
+Set the kubectl context to your stage cluster and bootstrap Flux:
 
 ```sh
 flux bootstrap github \
-    --context=staging \
+    --context=stage \
     --owner=${GITHUB_USER} \
     --repository=${GITHUB_REPO} \
     --branch=main \
     --personal \
-    --path=clusters/staging
+    --path=clusters/stage
 ```
 
-The bootstrap command commits the manifests for the Flux components in `clusters/staging/flux-system` dir
+The bootstrap command commits the manifests for the Flux components in `clusters/stage/flux-system` dir
 and creates a deploy key with read-only access on GitHub, so it can pull changes inside the cluster.
 
-Watch for the Helm releases being installed on staging:
+Watch for the Helm releases being installed on stage:
 
 ```console
 $ watch flux get helmreleases --all-namespaces
 
 NAMESPACE    	NAME         	REVISION	SUSPENDED	READY	MESSAGE 
-cert-manager 	cert-manager 	v1.11.0 	False    	True 	Release reconciliation succeeded
 flux-system  	weave-gitops 	4.0.12   	False    	True 	Release reconciliation succeeded
-ingress-nginx	ingress-nginx	4.4.2   	False    	True 	Release reconciliation succeeded
 podinfo      	podinfo      	6.3.0   	False    	True 	Release reconciliation succeeded
 ```
 
-Verify that the demo app can be accessed via ingress:
-
-```console
-$ kubectl -n ingress-nginx port-forward svc/ingress-nginx-controller 8080:80 &
-
-$ curl -H "Host: podinfo.staging" http://localhost:8080
-{
-  "hostname": "podinfo-59489db7b5-lmwpn",
-  "version": "6.2.3"
-}
-```
-
-Bootstrap Flux on production by setting the context and path to your production cluster:
+Bootstrap Flux on prod by setting the context and path to your prod cluster:
 
 ```sh
 flux bootstrap github \
-    --context=production \
+    --context=prod \
     --owner=${GITHUB_USER} \
     --repository=${GITHUB_REPO} \
     --branch=main \
     --personal \
-    --path=clusters/production
+    --path=clusters/prod
 ```
 
-Watch the production reconciliation:
+Watch the prod reconciliation:
 
 ```console
 $ flux get kustomizations --watch
@@ -394,7 +331,7 @@ spec:
 To generate a bcrypt hash please see Weave GitOps
 [documentation](https://docs.gitops.weave.works/docs/configuration/securing-access-to-the-dashboard/#login-via-a-cluster-user-account). 
 
-Note that on production systems it is recommended to expose Weave GitOps over TLS with an ingress controller and
+Note that on prod systems it is recommended to expose Weave GitOps over TLS with an ingress controller and
 to enable OIDC authentication for your organisation members.
 To configure OIDC with Dex and GitHub please see this [guide](https://docs.gitops.weave.works/docs/guides/setting-up-dex/).
 
@@ -413,11 +350,11 @@ Create a dir inside `clusters` with your cluster name:
 mkdir -p clusters/dev
 ```
 
-Copy the sync manifests from staging:
+Copy the sync manifests from stage:
 
 ```sh
-cp clusters/staging/infrastructure.yaml clusters/dev
-cp clusters/staging/apps.yaml clusters/dev
+cp clusters/stage/infrastructure.yaml clusters/dev
+cp clusters/stage/apps.yaml clusters/dev
 ```
 
 You could create a dev overlay inside `apps`, make sure
@@ -444,18 +381,18 @@ flux bootstrap github \
 ## Identical environments
 
 If you want to spin up an identical environment, you can bootstrap a cluster
-e.g. `production-clone` and reuse the `production` definitions.
+e.g. `prod-clone` and reuse the `prod` definitions.
 
-Bootstrap the `production-clone` cluster:
+Bootstrap the `prod-clone` cluster:
 
 ```sh
 flux bootstrap github \
-    --context=production-clone \
+    --context=prod-clone \
     --owner=${GITHUB_USER} \
     --repository=${GITHUB_REPO} \
     --branch=main \
     --personal \
-    --path=clusters/production-clone
+    --path=clusters/prod-clone
 ```
 
 Pull the changes locally:
@@ -464,31 +401,31 @@ Pull the changes locally:
 git pull origin main
 ```
 
-Create a `kustomization.yaml` inside the `clusters/production-clone` dir:
+Create a `kustomization.yaml` inside the `clusters/prod-clone` dir:
 
 ```yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - flux-system
-  - ../production/infrastructure.yaml
-  - ../production/apps.yaml
+  - ../prod/infrastructure.yaml
+  - ../prod/apps.yaml
 ```
 
 Note that besides the `flux-system` kustomize overlay, we also include
-the `infrastructure` and `apps` manifests from the production dir.
+the `infrastructure` and `apps` manifests from the prod dir.
 
 Push the changes to the main branch:
 
 ```sh
-git add -A && git commit -m "add production clone" && git push
+git add -A && git commit -m "add prod clone" && git push
 ```
 
-Tell Flux to deploy the production workloads on the `production-clone` cluster:
+Tell Flux to deploy the prod workloads on the `prod-clone` cluster:
 
 ```sh
 flux reconcile kustomization flux-system \
-    --context=production-clone \
+    --context=prod-clone \
     --with-source 
 ```
 
@@ -500,4 +437,4 @@ a pull requests is merged into the main branch and synced on the cluster.
 This repository contains the following GitHub CI workflows:
 
 * the [test](./.github/workflows/test.yaml) workflow validates the Kubernetes manifests and Kustomize overlays with [kubeconform](https://github.com/yannh/kubeconform)
-* the [e2e](./.github/workflows/e2e.yaml) workflow starts a Kubernetes cluster in CI and tests the staging setup by running Flux in Kubernetes Kind
+* the [e2e](./.github/workflows/e2e.yaml) workflow starts a Kubernetes cluster in CI and tests the stage setup by running Flux in Kubernetes Kind
