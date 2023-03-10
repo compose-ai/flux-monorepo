@@ -44,7 +44,7 @@ curl -s https://fluxcd.io/install.sh | sudo bash
 The Git repository contains the following top directories:
 
 - **apps** dir contains Helm releases with a custom configuration per cluster
-- **infrastructure** dir contains common infra tools like weave-gitops
+- **infrastructure** dir contains common infra tools such as ingress-nginx and cert-manager
 - **clusters** dir contains the Flux configuration per cluster
 
 ```
@@ -65,8 +65,8 @@ The Git repository contains the following top directories:
 The apps configuration is structured into:
 
 - **apps/base/** dir contains namespaces and Helm release definitions
-- **apps/prod/** dir contains the prod Helm release values
-- **apps/stage/** dir contains the stage values
+- **apps/production/** dir contains the production Helm release values
+- **apps/staging/** dir contains the staging values
 
 ```
 ./apps/
@@ -108,7 +108,7 @@ spec:
       className: nginx
 ```
 
-In **apps/stage/** dir we have a Kustomize patch with the stage specific values:
+In **apps/stage/** dir we have a Kustomize patch with the staging specific values:
 
 ```yaml
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
@@ -161,14 +161,88 @@ The infrastructure is structured into:
 ```
 ./infrastructure/
 ├── configs
+│   ├── cluster-issuers.yaml
 │   ├── network-policies.yaml
 │   └── kustomization.yaml
 └── controllers
+    ├── cert-manager.yaml
+    ├── ingress-nginx.yaml
     ├── weave-gitops.yaml
     └── kustomization.yaml
 ```
 
-## Bootstrap stage and prod
+In **infrastructure/controllers/** dir we have the Flux `HelmRepository` and `HelmRelease` definitions such as:
+
+```yaml
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: cert-manager
+  namespace: cert-manager
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: cert-manager
+      version: "1.x"
+      sourceRef:
+        kind: HelmRepository
+        name: cert-manager
+        namespace: cert-manager
+      interval: 12h
+  values:
+    installCRDs: true
+```
+
+Note that with ` interval: 12h` we configure Flux to pull the Helm repository index every twelfth hours to check for updates.
+If the new chart version that matches the `1.x` semver range is found, Flux will upgrade the release.
+
+In **infrastructure/configs/** dir we have Kubernetes custom resources, such as the Let's Encrypt issuer:
+
+```yaml
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt
+spec:
+  acme:
+    # Replace the email address with your own contact email
+    email: fluxcdbot@users.noreply.github.com
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-nginx
+    solvers:
+      - http01:
+          ingress:
+            class: nginx
+```
+
+In **clusters/production/infrastructure.yaml** we replace the Let's Encrypt server value to point to the production API:
+
+```yaml
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: infra-configs
+  namespace: flux-system
+spec:
+  # ...omitted for brevity
+  dependsOn:
+    - name: infra-controllers
+  patches:
+    - patch: |
+        - op: replace
+          path: /spec/acme/server
+          value: https://acme-v02.api.letsencrypt.org/directory
+      target:
+        kind: ClusterIssuer
+        name: letsencrypt
+```
+
+Note that with `dependsOn` we tell Flux to first install or upgrade the controllers and only then the configs.
+This ensures that the Kubernetes CRDs are registered on the cluster, before Flux applies any custom resources.
+
+## Bootstrap staging and production
 
 The clusters dir contains the Flux configuration:
 
@@ -182,7 +256,27 @@ The clusters dir contains the Flux configuration:
     └── infrastructure.yaml
 ```
 
-Note that with `path: ./apps/stage` we configure Flux to sync the stage Kustomize overlay and 
+In **clusters/staging/** dir we have the Flux Kustomization definitions, for example:
+
+```yaml
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: apps
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  dependsOn:
+    - name: infra-configs
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/stage
+  prune: true
+  wait: true
+```
+
+Note that with `path: ./apps/stage` we configure Flux to sync the staging Kustomize overlay and 
 with `dependsOn` we tell Flux to create the infrastructure items before deploying the apps.
 
 Fork this repository on your personal GitHub account and export your GitHub access token, username and repo name:
@@ -220,11 +314,25 @@ Watch for the Helm releases being installed on stage:
 $ watch flux get helmreleases --all-namespaces
 
 NAMESPACE    	NAME         	REVISION	SUSPENDED	READY	MESSAGE 
+cert-manager 	cert-manager 	v1.11.0 	False    	True 	Release reconciliation succeeded
 flux-system  	weave-gitops 	4.0.12   	False    	True 	Release reconciliation succeeded
+ingress-nginx	ingress-nginx	4.4.2   	False    	True 	Release reconciliation succeeded
 podinfo      	podinfo      	6.3.0   	False    	True 	Release reconciliation succeeded
 ```
 
-Bootstrap Flux on prod by setting the context and path to your prod cluster:
+Verify that the demo app can be accessed via ingress:
+
+```console
+$ kubectl -n ingress-nginx port-forward svc/ingress-nginx-controller 8080:80 &
+
+$ curl -H "Host: podinfo.staging" http://localhost:8080
+{
+  "hostname": "podinfo-59489db7b5-lmwpn",
+  "version": "6.2.3"
+}
+```
+
+Bootstrap Flux on production by setting the context and path to your production cluster:
 
 ```sh
 flux bootstrap github \
@@ -236,7 +344,7 @@ flux bootstrap github \
     --path=clusters/prod
 ```
 
-Watch the prod reconciliation:
+Watch the production reconciliation:
 
 ```console
 $ flux get kustomizations --watch
@@ -244,6 +352,7 @@ $ flux get kustomizations --watch
 NAME             	REVISION     	SUSPENDED	READY	MESSAGE                         
 apps             	main/696182e	False    	True 	Applied revision: main/696182e	
 flux-system      	main/696182e	False    	True 	Applied revision: main/696182e	
+infra-configs    	main/696182e	False    	True 	Applied revision: main/696182e	
 infra-controllers	main/696182e	False    	True 	Applied revision: main/696182e	
 ```
 
@@ -285,7 +394,7 @@ spec:
 To generate a bcrypt hash please see Weave GitOps
 [documentation](https://docs.gitops.weave.works/docs/configuration/securing-access-to-the-dashboard/#login-via-a-cluster-user-account). 
 
-Note that on prod systems it is recommended to expose Weave GitOps over TLS with an ingress controller and
+Note that on production systems it is recommended to expose Weave GitOps over TLS with an ingress controller and
 to enable OIDC authentication for your organisation members.
 To configure OIDC with Dex and GitHub please see this [guide](https://docs.gitops.weave.works/docs/guides/setting-up-dex/).
 
