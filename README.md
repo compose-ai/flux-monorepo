@@ -168,31 +168,6 @@ The infrastructure is structured into:
     └── kustomization.yaml
 ```
 
-In **clusters/prod/infrastructure.yaml** we replace the Let's Encrypt server value to point to the prod API:
-
-```yaml
-apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
-kind: Kustomization
-metadata:
-  name: infra-configs
-  namespace: flux-system
-spec:
-  # ...omitted for brevity
-  dependsOn:
-    - name: infra-controllers
-  patches:
-    - patch: |
-        - op: replace
-          path: /spec/acme/server
-          value: https://acme-v02.api.letsencrypt.org/directory
-      target:
-        kind: ClusterIssuer
-        name: letsencrypt
-```
-
-Note that with `dependsOn` we tell Flux to first install or upgrade the controllers and only then the configs.
-This ensures that the Kubernetes CRDs are registered on the cluster, before Flux applies any custom resources.
-
 ## Bootstrap stage and prod
 
 The clusters dir contains the Flux configuration:
@@ -205,26 +180,6 @@ The clusters dir contains the Flux configuration:
 └── stage
     ├── apps.yaml
     └── infrastructure.yaml
-```
-
-In **clusters/stage/** dir we have the Flux Kustomization definitions, for example:
-
-```yaml
-apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
-kind: Kustomization
-metadata:
-  name: apps
-  namespace: flux-system
-spec:
-  interval: 10m0s
-  dependsOn:
-    - name: infra-configs
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  path: ./apps/stage
-  prune: true
-  wait: true
 ```
 
 Note that with `path: ./apps/stage` we configure Flux to sync the stage Kustomize overlay and 
@@ -289,7 +244,6 @@ $ flux get kustomizations --watch
 NAME             	REVISION     	SUSPENDED	READY	MESSAGE                         
 apps             	main/696182e	False    	True 	Applied revision: main/696182e	
 flux-system      	main/696182e	False    	True 	Applied revision: main/696182e	
-infra-configs    	main/696182e	False    	True 	Applied revision: main/696182e	
 infra-controllers	main/696182e	False    	True 	Applied revision: main/696182e	
 ```
 
