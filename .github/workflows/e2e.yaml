@@ -29,9 +29,6 @@ jobs:
           --url=${{ github.event.repository.html_url }} \
           --branch=${GITHUB_REF#refs/heads/} \
           --ignore-paths="./clusters/**/flux-system/"
-          kubectl describe secret flux-system -n flux-system
-          kubectl get secrets/flux-system -n flux-system \
-          --template={{.data.known_hosts}} | base64 -D
           flux create kustomization flux-system \
           --source=flux-system \
           --path=./clusters/ops
