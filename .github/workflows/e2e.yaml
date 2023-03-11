@@ -54,4 +54,4 @@ jobs:
           kubectl -n flux-system describe gitrepository flux-system
           kubectl describe secret flux-system -n flux-system
           kubectl get secrets/flux-system -n flux-system \
-          --template={{.data.known_hosts}} | base64 -D
+          --template={{.data.known_hosts}} | base64 -d
