@@ -29,6 +29,10 @@ jobs:
           --url=${{ github.event.repository.html_url }} \
           --branch=${GITHUB_REF#refs/heads/} \
           --ignore-paths="./clusters/**/flux-system/"
+          flux create secret git flux-system \
+          --url=ssh://git@github.com/${{ github.event.repository.name }} \
+          --ssh-key-algorithm=ecdsa \
+          --ssh-ecdsa-curve=p521
           flux create kustomization flux-system \
           --source=flux-system \
           --path=./clusters/ops
