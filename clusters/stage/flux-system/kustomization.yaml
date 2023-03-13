@@ -5,7 +5,7 @@ resources:
   - gotk-sync.yaml
 labels:
   - pairs:
-      toolkit.fluxcd.io/tenant: sre-team
+      toolkit.fluxcd.io/tenant: flux
 patches:
   - patch: |
       - op: add
