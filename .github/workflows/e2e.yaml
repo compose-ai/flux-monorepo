@@ -26,7 +26,7 @@ jobs:
       - name: Create SSH key
         run: |
           mkdir -p ~/.ssh/
-          echo ${{ secrets.FLUX_MONOREPO_PRIVATE_KEY }} > ../private.key
+          echo ${{ secrets.FLUX_MONOREPO_PRIVATE_KEY }} | base64 -d > ../private.key
           sudo chmod 600 ../private.key
           ssh-keyscan -H github.com > ~/.ssh/known_hosts
         shell: bash
