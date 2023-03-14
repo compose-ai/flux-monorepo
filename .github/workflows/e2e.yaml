@@ -23,6 +23,13 @@ jobs:
           cluster_name: flux
       - name: Install Flux in Kubernetes Kind
         run: flux install
+      - name: Create SSH key
+        run: |
+          mkdir -p ~/.ssh/
+          echo ${{ secrets.FLUX_MONOREPO_PRIVATE_KEY }} > ../private.key
+          sudo chmod 600 ../private.key
+          ssh-keyscan -H github.com > ~/.ssh/known_hosts
+        shell: bash
       - name: Setup cluster reconciliation
         run: |
           flux create source git flux-system \
@@ -31,8 +38,7 @@ jobs:
           --ignore-paths="./clusters/**/flux-system/"
           flux create secret git flux-system \
           --url=ssh://git@github.com/${{ github.event.repository.name }} \
-          --ssh-key-algorithm=ecdsa \
-          --ssh-ecdsa-curve=p521
+          --private-key-file=../private.key
           flux create kustomization flux-system \
           --source=flux-system \
           --path=./clusters/ops
