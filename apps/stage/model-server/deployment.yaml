@@ -75,7 +75,7 @@ spec:
       # unfortunate hack - when creating new nodes permissions need to be setup for the new volume to be shared
       initContainers:
         - name: volume-mount-hack
-          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/model@sha256:4d287c9e2464057cadd6da3487a2216abc2df83e5801201136fe42d53e6a3059
+          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/model@sha256:71894520b367b5a58e8393422a06e5c3ddede74231c83e186678f9756c842fb5
           command: [ "sh", "-c", "chown -R 1001:1001 /models;gsutil cp -r gs://deep-model/gpt-neo-1.3B /models/" ]
           volumeMounts:
             - name: models
