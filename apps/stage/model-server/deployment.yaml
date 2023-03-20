@@ -1,0 +1,94 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  labels:
+    app: model-server
+  name: model-server
+  namespace: model-server
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: model-server
+  strategy:
+    rollingUpdate:
+      maxSurge: 100%
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: model-server
+    spec:
+      containers:
+        - name: model-server
+          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/model@sha256:4d287c9e2464057cadd6da3487a2216abc2df83e5801201136fe42d53e6a3059
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 10G
+            limits:
+              nvidia.com/gpu: 1
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: http-prom
+              containerPort: 9900
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 4 # 4*20s = 1:20 for recovering from failure
+            httpGet:
+              scheme: HTTP
+              path: /livez
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 2
+            periodSeconds: 20
+          readinessProbe:
+            failureThreshold: 20 # 20*15s = 5 min startup time required
+            httpGet:
+              scheme: HTTP
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 3
+          env:
+            - name: DYNACONF_PROCESS_COUNT
+              value: "1"
+          volumeMounts:
+            - mountPath: /models
+              name: models
+          securityContext:
+            runAsUser: 1001
+            runAsGroup: 1001
+      volumes:
+        - name: models
+          persistentVolumeClaim:
+            claimName: model-pv-claim
+      securityContext:
+        fsGroup: 1001
+      # unfortunate hack - when creating new nodes permissions need to be setup for the new volume to be shared
+      initContainers:
+        - name: volume-mount-hack
+          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/model@sha256:4d287c9e2464057cadd6da3487a2216abc2df83e5801201136fe42d53e6a3059
+          command: [ "sh", "-c", "chown -R 1001:1001 /models;gsutil cp -r gs://deep-model/gpt-neo-1.3B /models/" ]
+          volumeMounts:
+            - name: models
+              mountPath: /models
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name:  model-pv-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: standard-rwo
+  resources:
+    requests:
+      storage: 10Gi
