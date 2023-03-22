@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: context-server
-          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/context@sha256:060fd256b1fc30c591cd9823bc33273fa958ac173fd3b3c86d3ab4d0d594a0f3
+          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/context:release-be58775
 
           imagePullPolicy: IfNotPresent
           ports:
