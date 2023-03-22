@@ -7,7 +7,7 @@ metadata:
   name: model-server
   namespace: model-server
 spec:
-  replicas: 1
+  replicas: 2
   revisionHistoryLimit: 10
   selector:
     matchLabels:
@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: model-server
-          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/model@sha256:4d287c9e2464057cadd6da3487a2216abc2df83e5801201136fe42d53e6a3059
+          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/model:release-9d9bc5c
           imagePullPolicy: IfNotPresent
           resources:
             requests:
@@ -61,8 +61,9 @@ spec:
             - name: DYNACONF_PROCESS_COUNT
               value: "1"
           volumeMounts:
-            - mountPath: /models
-              name: models
+            - name: models
+              mountPath: /models
+              readOnly: true
           securityContext:
             runAsUser: 1001
             runAsGroup: 1001
@@ -72,23 +73,40 @@ spec:
             claimName: model-pv-claim
       securityContext:
         fsGroup: 1001
-      # unfortunate hack - when creating new nodes permissions need to be setup for the new volume to be shared
-      initContainers:
-        - name: volume-mount-hack
-          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/model@sha256:71894520b367b5a58e8393422a06e5c3ddede74231c83e186678f9756c842fb5
-          command: [ "sh", "-c", "chown -R 1001:1001 /models;gsutil cp -r gs://deep-model/gpt-neo-1.3B /models/" ]
-          volumeMounts:
-            - name: models
-              mountPath: /models
+
 ---
-kind: PersistentVolumeClaim
-apiVersion: v1
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
 metadata:
-  name:  model-pv-claim
+  name: model-csi-gcs-sc
+provisioner: gcs.csi.ofek.dev
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: model-pv-claim
 spec:
   accessModes:
   - ReadWriteOnce
-  storageClassName: standard-rwo
   resources:
     requests:
       storage: 10Gi
+  storageClassName: model-csi-gcs-sc
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: model-csi-gcs-pv
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 10Gi
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: model-csi-gcs-sc
+  csi:
+    driver: gcs.csi.ofek.dev
+    volumeHandle: csi-gcs
+    nodePublishSecretRef:
+      name: csi-gcs-secret
+      namespace: model-server
