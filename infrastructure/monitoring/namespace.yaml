@@ -1,0 +1,8 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    name: metrics
+    elbv2.k8s.aws/pod-readiness-gate-inject: enabled
+  name: metrics

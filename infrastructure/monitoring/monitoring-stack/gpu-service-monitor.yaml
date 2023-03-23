@@ -1,0 +1,30 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: kube-prometheus-stack-admission
+    app.kubernetes.io/component: dcgm-exporter
+    app.kubernetes.io/instance: kube-prometheus-stack
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: dcgm-exporter
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    app.kubernetes.io/version: 19.2.2
+    chart: kube-prometheus-stack-19.2.2
+    helm.sh/chart: dcgm-exporter-2.4.0
+    heritage: Helm
+    release: kube-prometheus-stack
+  name: dcgm-exporter
+  namespace: metrics
+spec:
+  endpoints:
+    - interval: 15s
+      path: /metrics
+      port: metrics
+  namespaceSelector:
+    matchNames:
+      - metrics
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: dcgm-exporter
+      app.kubernetes.io/instance: dcgm-exporter
+      app.kubernetes.io/name: dcgm-exporter

@@ -1,0 +1,19 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: fluent-bit-podmonitor
+  namespace: metrics
+spec:
+  podMetricsEndpoints:
+    - path: /api/v1/metrics/prometheus
+      targetPort: 2020
+  namespaceSelector:
+    matchNames:
+      - metrics
+  selector:
+    matchExpressions:
+      - key: compose.ai/ignore-monitoring
+        operator: DoesNotExist
+        values:
+          - "ignore"

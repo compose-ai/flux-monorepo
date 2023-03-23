@@ -1,0 +1,36 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: gpu-helm-charts
+  namespace: metrics
+spec:
+  interval: 1m
+  url: https://nvidia.github.io/gpu-monitoring-tools/helm-charts
+
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: dcgm-exporter
+  namespace: metrics
+spec:
+  interval: 1m
+  releaseName: dcgm-exporter
+  chart: 
+    spec:
+      chart: dcgm-exporter
+      sourceRef:
+        kind: HelmRepository
+        name: gpu-helm-charts
+        namespace: metrics
+  values:
+    image:
+      tag: 2.0.13-2.1.1-ubuntu18.04
+    arguments: null
+    nodeSelector:
+      kubestack.com/cluster_workspace: stage
+    securityContext:
+      privileged: true
+    serviceMonitor:
+      enabled: false
+
