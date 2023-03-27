@@ -60,10 +60,17 @@ spec:
           env:
             - name: DYNACONF_PROCESS_COUNT
               value: "1"
+            - name: DYNACONF_FLUENT_LOG_LOCATION
+              value: "/fluent-bit-input-logs/fluent-bit-input-logs-{time}.log"
+            - name: ENABLE_METRICS
+              value: "true"
           volumeMounts:
             - name: models
               mountPath: /models
               readOnly: true
+            - name: fluentbit
+              mountPath: /fluent-bit-input-logs
+              readOnly: false
           securityContext:
             runAsUser: 1001
             runAsGroup: 1001
@@ -71,6 +78,9 @@ spec:
         - name: models
           persistentVolumeClaim:
             claimName: model-pv-claim
+        - name: fluentbit
+          persistentVolumeClaim:
+            claimName: fluent-bit-pv-claim
       securityContext:
         fsGroup: 1001
 
@@ -79,6 +89,12 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: model-csi-gcs-sc
+provisioner: gcs.csi.ofek.dev
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: fluent-logs-csi-gcs-sc
 provisioner: gcs.csi.ofek.dev
 ---
 apiVersion: v1
@@ -109,4 +125,34 @@ spec:
     volumeHandle: csi-gcs
     nodePublishSecretRef:
       name: csi-gcs-secret
+      namespace: model-server
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fluent-bit-pv-claim
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: fluent-logs-csi-gcs-sc
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: fluent-bin-pv
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 10Gi
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: fluent-logs-csi-gcs-sc
+  csi:
+    driver: gcs.csi.ofek.dev
+    volumeHandle: csi-gcs
+    nodePublishSecretRef:
+      name: csi-gcs-secret-fluent-bit
       namespace: model-server
