@@ -11,6 +11,10 @@ spec:
       port: 8080
       targetPort: http
       nodePort: 32298
+    - name: http-prom
+      port: 9900
+      targetPort: http-prom
+      nodePort: 32299
   selector:
     app: context-server
   type: NodePort
