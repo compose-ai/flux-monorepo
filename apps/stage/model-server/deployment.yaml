@@ -7,7 +7,7 @@ metadata:
   name: model-server
   namespace: model-server
 spec:
-  replicas: 1
+  replicas: 2
   revisionHistoryLimit: 10
   selector:
     matchLabels:
@@ -22,14 +22,16 @@ spec:
       labels:
         app: model-server
     spec:
+      nodeSelector:
+        cloud.google.com/gke-nodepool: compose
       containers:
         - name: model-server
           image: us-docker.pkg.dev/compose-cluster/compose-ai-server/model:release-9d9bc5c
           imagePullPolicy: IfNotPresent
           resources:
             requests:
-              cpu: 1000m
-              memory: 10G
+              cpu: 2000m
+              memory: 12G
             limits:
               nvidia.com/gpu: 1
           ports:
