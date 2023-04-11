@@ -7,7 +7,7 @@ metadata:
   name: model-server
   namespace: model-server
 spec:
-  replicas: 6
+  replicas: 12
   revisionHistoryLimit: 10
   selector:
     matchLabels:
@@ -30,7 +30,7 @@ spec:
           imagePullPolicy: IfNotPresent
           resources:
             requests:
-              cpu: 1600m
+              cpu: 1500m
               memory: 12G
             limits:
               nvidia.com/gpu: 1
