@@ -22,11 +22,25 @@ spec:
       labels:
         app: context-server
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - context-server
+            topologyKey: "kubernetes.io/hostname"
       containers:
         - name: context-server
           image: us-docker.pkg.dev/compose-cluster/compose-ai-server/context:release-be58775
 
           imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 2Gi
           ports:
             - name: http
               containerPort: 8080
