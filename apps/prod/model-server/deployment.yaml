@@ -1,0 +1,126 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  labels:
+    app: model-server
+  name: model-server
+  namespace: model-server
+spec:
+  replicas: 12
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: model-server
+  strategy:
+    rollingUpdate:
+      maxSurge: 100%
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: model-server
+    spec:
+      nodeSelector:
+        cloud.google.com/gke-nodepool: compose
+      containers:
+        - name: model-server
+          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/model:release-9d9bc5c
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 1500m
+              memory: 12G
+            limits:
+              nvidia.com/gpu: 1
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: http-prom
+              containerPort: 9900
+              protocol: TCP
+          # livenessProbe:
+          #   failureThreshold: 4 # 4*20s = 1:20 for recovering from failure
+          #   httpGet:
+          #     scheme: HTTP
+          #     path: /livez
+          #     port: 8080
+          #   initialDelaySeconds: 10
+          #   timeoutSeconds: 2
+          #   periodSeconds: 20
+          # readinessProbe:
+          #   failureThreshold: 20 # 20*15s = 5 min startup time required
+          #   httpGet:
+          #     scheme: HTTP
+          #     path: /healthz
+          #     port: 8080
+          #   initialDelaySeconds: 10
+          #   periodSeconds: 15
+          #   timeoutSeconds: 3
+          env:
+            - name: DYNACONF_PROCESS_COUNT
+              value: "1"
+            - name: DYNACONF_FLUENT_LOG_LOCATION
+              value: "/models/prod-fluent-bit-input-logs/fluent-bit-input-logs-{time}.log"
+            - name: ENABLE_METRICS
+              value: "true"
+          volumeMounts:
+            - name: models
+              mountPath: /models
+              readOnly: false
+          securityContext:
+            runAsUser: 1001
+            runAsGroup: 1001
+      volumes:
+        - name: models
+          persistentVolumeClaim:
+            claimName: model-pv-claim
+      securityContext:
+        fsGroup: 1001
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: model-csi-gcs-sc
+provisioner: gcs.csi.ofek.dev
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: model-pv-claim
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: model-csi-gcs-sc
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: model-csi-gcs-pv
+  annotations:
+    pv.beta.kubernetes.io/gid: "1001"
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 10Gi
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: model-csi-gcs-sc
+  csi:
+    driver: gcs.csi.ofek.dev
+    volumeHandle: csi-gcs
+    nodePublishSecretRef:
+      name: csi-gcs-secret
+      namespace: model-server
+    volumeAttributes:
+      gid: "1001"
+      uid: "1001"
+      dirMode: "0775"
+      fileMode: "0664"
+      implicitDirs: "true"
+---
