@@ -70,7 +70,7 @@ spec:
             runAsGroup: 1002
           env:
             - name: DYNACONF_MODEL_SERVER_URL
-              value: "http://model-server.model-server.svc.cluster.local:8080"
+              value: "http://model-server.model-server.svc.cluster.local:8000"
             - name: DYNACONF_NUM_RETURN_SEQUENCES_CIRCUIT_TIMEOUT_SECONDS
               value: "0.7"
             - name: DYNACONF_FLUENT_LOG_LOCATION

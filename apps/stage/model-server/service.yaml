@@ -7,9 +7,18 @@ metadata:
   namespace: model-server
 spec:
   ports:
-    - name: http
-      port: 8080
-      targetPort: http
+    - protocol: TCP
+      port: 8000
+      name: http
+      targetPort: 8000
+    - protocol: TCP
+      port: 8001
+      name: grpc
+      targetPort: 8001
+    - protocol: TCP
+      port: 8002
+      name: metrics
+      targetPort: 8002
   selector:
     app: model-server
-  type: ClusterIP
+  type: LoadBalancer
