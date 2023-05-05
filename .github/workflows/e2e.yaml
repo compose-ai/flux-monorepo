@@ -15,7 +15,9 @@ jobs:
       - name: Setup tools
         uses: ./.github/actions/tools
       - name: Setup Flux
-        uses: fluxcd/flux2/action@main
+        run: |
+          curl -s https://fluxcd.io/install.sh | sudo FLUX_VERSION=0.40.2 bash
+          flux --version
       - name: Setup Kubernetes
         uses: helm/kind-action@v1.5.0
         with:
