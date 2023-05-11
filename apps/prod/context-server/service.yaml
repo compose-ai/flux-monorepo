@@ -4,7 +4,7 @@ metadata:
   labels:
     app: context-server
   name: context-server
-  namespace: kubernetes-dashboard
+  namespace: context-server
 spec:
   ports:
     - name: http
@@ -18,3 +18,5 @@ spec:
   selector:
     app: context-server
   type: NodePort
+  externalTrafficPolicy: Local
+  sessionAffinity: ClientIP
