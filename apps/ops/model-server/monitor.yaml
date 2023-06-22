@@ -1,0 +1,21 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: model-server-podmonitor
+  namespace: model-server
+  labels:
+    app.kubernetes.io/part-of: compose
+spec:
+  podMetricsEndpoints:
+    - path: /metrics
+      targetPort: 8002
+  namespaceSelector:
+    matchNames:
+      - model-server
+  selector:
+    matchExpressions:
+      - key: compose.ai/ignore-monitoring
+        operator: DoesNotExist
+        values:
+          - "ignore"

@@ -3,5 +3,6 @@ kind: Kustomization
 namespace: context-server
 resources:
   - deployment.yaml
+  - monitor.yaml
   - namespace.yaml
   - service.yaml

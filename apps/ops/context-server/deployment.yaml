@@ -77,6 +77,8 @@ spec:
               value: "/models/ops-fluent-bit-input-logs/context-{time}.log"
             - name: ENABLE_METRICS
               value: "true"
+            - name: DYNACONF_LOG_LEVEL
+              value: "INFO"
           volumeMounts:
             - name: models
               mountPath: /models
