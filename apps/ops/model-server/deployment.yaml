@@ -72,6 +72,8 @@ spec:
             - name: models
               mountPath: /models
               readOnly: false
+            - mountPath: /dev/shm
+              name: dshm
           securityContext:
             runAsUser: 1001
             runAsGroup: 1001
@@ -79,6 +81,10 @@ spec:
         - name: models
           persistentVolumeClaim:
             claimName: model-pv-claim
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
       securityContext:
         fsGroup: 1001
 ---
