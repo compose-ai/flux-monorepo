@@ -7,9 +7,9 @@ metadata:
   namespace: model-server
 spec:
   ports:
-    - name: http
+    - name: newhttp
       port: 8000
-      targetPort: http
+      targetPort: newhttp
   selector:
     app: model-server
   type: ClusterIP

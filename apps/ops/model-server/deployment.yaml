@@ -35,10 +35,10 @@ spec:
             limits:
               nvidia.com/gpu: 1
           ports:
-            - name: http
+            - name: newhttp
               containerPort: 8000
               protocol: TCP
-            - name: http-prom
+            - name: newhttp-prom
               containerPort: 8002
               protocol: TCP
           livenessProbe:
