@@ -79,5 +79,53 @@ spec:
               value: "true"
             - name: DYNACONF_LOG_LEVEL
               value: "INFO"
+          volumeMounts:
+            - name: models
+              mountPath: /models
+      volumes:
+        - name: models
+          persistentVolumeClaim:
+            claimName: model-pv-claim-context
       securityContext:
         fsGroup: 1002
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: model-pv-claim-context
+  namespace: context-server
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: model-csi-gcs-sc
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: model-csi-gcs-pv-context
+  annotations:
+    pv.beta.kubernetes.io/gid: "1002"
+  namespace: context-server
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 50Gi
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: model-csi-gcs-sc
+  csi:
+    driver: gcs.csi.ofek.dev
+    volumeHandle: csi-gcs
+    nodePublishSecretRef:
+      name: csi-gcs-secret
+      namespace: context-server
+    volumeAttributes:
+      gid: "1002"
+      uid: "1002"
+      dirMode: "0775"
+      fileMode: "0664"
+      implicitDirs: "true"
+---
