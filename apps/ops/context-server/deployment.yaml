@@ -79,9 +79,5 @@ spec:
               value: "true"
             - name: DYNACONF_LOG_LEVEL
               value: "INFO"
-      volumes:
-        - name: models
-          persistentVolumeClaim:
-            claimName: model-pv-claim-context
       securityContext:
         fsGroup: 1002
