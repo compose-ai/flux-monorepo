@@ -11,6 +11,7 @@ spec:
     requests:
       storage: 10Gi
   storageClassName: model-csi-gcs-sc
+  volumeName: "model-csi-gcs-pv-fluent"
 ---
 apiVersion: v1
 kind: PersistentVolume

@@ -101,6 +101,7 @@ spec:
     requests:
       storage: 50Gi
   storageClassName: model-csi-gcs-sc
+  volumeName: "model-csi-gcs-pv-context"
 ---
 apiVersion: v1
 kind: PersistentVolume
