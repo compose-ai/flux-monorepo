@@ -38,6 +38,9 @@ spec:
             - name: newhttp
               containerPort: 8000
               protocol: TCP
+            - name: grcp
+              containerPort: 8001
+              protocol: TCP
             - name: newhttp-prom
               containerPort: 8002
               protocol: TCP
