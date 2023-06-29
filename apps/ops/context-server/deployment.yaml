@@ -87,6 +87,9 @@ spec:
         - name: models
           persistentVolumeClaim:
             claimName: model-pv-claim-context
+        - name: cache
+          persistentVolumeClaim:
+            claimName: cache-pv-claim
       securityContext:
         fsGroup: 1002
 ---
