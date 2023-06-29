@@ -75,6 +75,9 @@ spec:
             - name: models
               mountPath: /models
               readOnly: false
+            - name: models
+              mountPath: /.cupy
+              readOnly: false
             - mountPath: /dev/shm
               name: dshm
           securityContext:
