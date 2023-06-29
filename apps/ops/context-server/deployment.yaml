@@ -81,6 +81,8 @@ spec:
           volumeMounts:
             - name: models
               mountPath: /models
+            - name: cache
+              mountPath: /.cache
       volumes:
         - name: models
           persistentVolumeClaim:
@@ -115,6 +117,47 @@ spec:
   capacity:
     storage: 50Gi
   persistentVolumeReclaimPolicy: Retain
+  storageClassName: model-csi-gcs-sc
+  csi:
+    driver: gcs.csi.ofek.dev
+    volumeHandle: csi-gcs
+    nodePublishSecretRef:
+      name: csi-gcs-secret
+      namespace: context-server
+    volumeAttributes:
+      gid: "1002"
+      uid: "1002"
+      dirMode: "0775"
+      fileMode: "0664"
+      implicitDirs: "true"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cache-pv-claim
+  namespace: context-server
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: model-csi-gcs-sc
+  volumeName: "cache-gcs-pv"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: cache-gcs-pv
+  annotations:
+    pv.beta.kubernetes.io/gid: "1002"
+  namespace: context-server
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 50Gi
+  persistentVolumeReclaimPolicy: Delete
   storageClassName: model-csi-gcs-sc
   csi:
     driver: gcs.csi.ofek.dev
