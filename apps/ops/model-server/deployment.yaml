@@ -130,7 +130,7 @@ spec:
   storageClassName: model-csi-gcs-sc
   csi:
     driver: gcs.csi.ofek.dev
-    volumeHandle: csi-gcs
+    volumeHandle: model-server-models
     nodePublishSecretRef:
       name: csi-gcs-secret
       namespace: model-server

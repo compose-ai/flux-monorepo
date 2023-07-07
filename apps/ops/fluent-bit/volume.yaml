@@ -26,7 +26,7 @@ spec:
   storageClassName: model-csi-gcs-sc
   csi:
     driver: gcs.csi.ofek.dev
-    volumeHandle: csi-gcs
+    volumeHandle: fluent-input
     nodePublishSecretRef:
       name: csi-gcs-secret
       namespace: metrics
@@ -58,7 +58,7 @@ spec:
   storageClassName: model-csi-gcs-sc
   csi:
     driver: gcs.csi.ofek.dev
-    volumeHandle: csi-gcs
+    volumeHandle: fluent-output
     nodePublishSecretRef:
       name: csi-gcs-sensitive-logs-secret
       namespace: metrics
