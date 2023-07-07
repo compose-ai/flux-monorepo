@@ -60,5 +60,5 @@ spec:
     driver: gcs.csi.ofek.dev
     volumeHandle: csi-gcs
     nodePublishSecretRef:
-      name: csi-gcs-secret
+      name: csi-gcs-sensitive-logs-secret
       namespace: metrics
