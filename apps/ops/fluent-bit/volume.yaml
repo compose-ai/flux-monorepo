@@ -26,6 +26,7 @@ spec:
   storageClassName: model-csi-gcs-sc
   csi:
     driver: gcs.csi.ofek.dev
+    # Make sure this is globally unique or you may run into issues with volumes mounting / attaching
     volumeHandle: fluent-input
     nodePublishSecretRef:
       name: csi-gcs-secret
@@ -58,6 +59,7 @@ spec:
   storageClassName: model-csi-gcs-sc
   csi:
     driver: gcs.csi.ofek.dev
+    # Make sure this is globally unique or you may run into issues with volumes mounting / attaching
     volumeHandle: fluent-output
     nodePublishSecretRef:
       name: csi-gcs-sensitive-logs-secret

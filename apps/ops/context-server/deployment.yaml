@@ -120,6 +120,7 @@ spec:
   storageClassName: model-csi-gcs-sc
   csi:
     driver: gcs.csi.ofek.dev
+    # Make sure this is globally unique or you may run into issues with volumes mounting / attaching
     volumeHandle: context-model-directory
     nodePublishSecretRef:
       name: csi-gcs-secret
