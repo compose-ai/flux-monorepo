@@ -86,22 +86,27 @@ spec:
             runAsUser: 1002
             runAsGroup: 1002
       volumes:
-        - hostPath:
-            path: /fluent-bit-input-logs
-          name: fluentbitonlylogs
+        - name: fluentbitonlylogs
+          persistentVolumeClaim:
+            claimName: fluent-bit-logs
         - name: models
           persistentVolumeClaim:
             claimName: model-pv-claim-context
       securityContext:
         fsGroup: 1002
-      # slight hack - when creating new nodes permissions need to be setup for the new host path volume to be shared
-      initContainers:
-        - name: volume-mount-hack
-          image: busybox
-          command: [ "sh", "-c", "chown -R 1002:1002 /fluent-bit-input-logs" ]
-          volumeMounts:
-            - name: fluentbitonlylogs
-              mountPath: /fluent-bit-input-logs
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fluent-bit-logs
+  namespace: context-server
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: standard-rwo
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
