@@ -73,22 +73,38 @@ spec:
             - name: DYNACONF_NUM_RETURN_SEQUENCES_CIRCUIT_TIMEOUT_SECONDS
               value: "0.7"
             - name: DYNACONF_FLUENT_LOG_LOCATION
-              value: "/models/ops-fluent-bit-input-logs/context-{time}.log"
+              value: "/fluent-bit-input-logs/fluent-bit-input-logs-context-{time}.log"
             - name: ENABLE_METRICS
               value: "true"
             - name: DYNACONF_LOG_LEVEL
               value: "INFO"
           volumeMounts:
+            - mountPath: /fluent-bit-input-logs
+              name: fluentbitonlylogs
             - name: models
               mountPath: /models
             - name: models
               mountPath: /.cache
+          securityContext:
+            runAsUser: 1002
+            runAsGroup: 1002
       volumes:
+        - hostPath:
+            path: /fluent-bit-input-logs
+          name: fluentbitonlylogs
         - name: models
           persistentVolumeClaim:
             claimName: model-pv-claim-context
       securityContext:
         fsGroup: 1002
+      # slight hack - when creating new nodes permissions need to be setup for the new host path volume to be shared
+      initContainers:
+        - name: volume-mount-hack
+          image: busybox
+          command: [ "sh", "-c", "chown -R 1002:1002 /fluent-bit-input-logs" ]
+          volumeMounts:
+            - name: fluentbitonlylogs
+              mountPath: /fluent-bit-input-logs
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
