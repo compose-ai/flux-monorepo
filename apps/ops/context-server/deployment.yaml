@@ -64,9 +64,6 @@ spec:
               port: 8080
             initialDelaySeconds: 10
             periodSeconds: 5
-          securityContext:
-            runAsUser: 1002
-            runAsGroup: 1002
           env:
             - name: DYNACONF_MODEL_SERVER_URL
               value: "model-server.model-server.svc.cluster.local:8001"
