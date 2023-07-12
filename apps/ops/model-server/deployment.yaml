@@ -86,6 +86,7 @@ spec:
             runAsUser: 1001
             runAsGroup: 1001
       volumes:
+        # The name of this volume must be fluentbitonlylogs for fluent bit to be able to find all the logs files
         - name: fluentbitonlylogs
           emptyDir: {}
         - name: models
