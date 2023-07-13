@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/part-of: compose
 spec:
   podMetricsEndpoints:
-    - path: /
+    - path: /metrics
       targetPort: 9900
   namespaceSelector:
     matchNames:
