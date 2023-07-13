@@ -77,7 +77,7 @@ spec:
             - name: models
               mountPath: /models
               readOnly: false
-            - name: models
+            - name: cupy
               mountPath: /.cupy
               readOnly: false
             - mountPath: /dev/shm
@@ -88,6 +88,8 @@ spec:
       volumes:
         # The name of this volume must be fluentbitonlylogs for fluent bit to be able to find all the logs files
         - name: fluentbitonlylogs
+          emptyDir: {}
+        - name: cupy
           emptyDir: {}
         - name: models
           persistentVolumeClaim:

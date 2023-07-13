@@ -80,7 +80,7 @@ spec:
               name: fluentbitonlylogs
             - name: models
               mountPath: /models
-            - name: models
+            - name: cache
               mountPath: /.cache
           securityContext:
             runAsUser: 1002
@@ -88,6 +88,8 @@ spec:
       volumes:
         # The name of this volume must be fluentbitonlylogs for fluent bit to be able to find all the logs files
         - name: fluentbitonlylogs
+          emptyDir: {}
+        - name: cache
           emptyDir: {}
         - name: models
           persistentVolumeClaim:
