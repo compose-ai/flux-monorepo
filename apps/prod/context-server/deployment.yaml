@@ -34,8 +34,7 @@ spec:
             topologyKey: "kubernetes.io/hostname"
       containers:
         - name: context-server
-          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/context:release-be58775
-
+          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/context-server:dev-cbd30f2
           imagePullPolicy: IfNotPresent
           resources:
             requests:
@@ -65,22 +64,33 @@ spec:
               port: 8080
             initialDelaySeconds: 10
             periodSeconds: 5
-          securityContext:
-            runAsUser: 1002
-            runAsGroup: 1002
           env:
             - name: DYNACONF_MODEL_SERVER_URL
-              value: "http://model-server.model-server.svc.cluster.local:8080"
+              value: "model-server.model-server.svc.cluster.local:8001"
             - name: DYNACONF_NUM_RETURN_SEQUENCES_CIRCUIT_TIMEOUT_SECONDS
               value: "0.7"
             - name: DYNACONF_FLUENT_LOG_LOCATION
-              value: "/models/prod-fluent-bit-input-logs/fluent-bit-input-logs-{time}.log"
+              value: "/fluent-bit-input-logs/fluent-bit-input-logs-context-{time}.log"
             - name: ENABLE_METRICS
               value: "true"
+            - name: DYNACONF_LOG_LEVEL
+              value: "INFO"
           volumeMounts:
+            - mountPath: /fluent-bit-input-logs
+              name: fluentbitonlylogs
             - name: models
               mountPath: /models
+            - name: cache
+              mountPath: /.cache
+          securityContext:
+            runAsUser: 1002
+            runAsGroup: 1002
       volumes:
+        # The name of this volume must be fluentbitonlylogs for fluent bit to be able to find all the logs files
+        - name: fluentbitonlylogs
+          emptyDir: {}
+        - name: cache
+          emptyDir: {}
         - name: models
           persistentVolumeClaim:
             claimName: model-pv-claim-context
@@ -91,13 +101,15 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: model-pv-claim-context
+  namespace: context-server
 spec:
   accessModes:
   - ReadWriteMany
   resources:
     requests:
-      storage: 10Gi
+      storage: 50Gi
   storageClassName: model-csi-gcs-sc
+  volumeName: "model-csi-gcs-pv-context"
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -105,16 +117,18 @@ metadata:
   name: model-csi-gcs-pv-context
   annotations:
     pv.beta.kubernetes.io/gid: "1002"
+  namespace: context-server
 spec:
   accessModes:
   - ReadWriteMany
   capacity:
-    storage: 10Gi
+    storage: 50Gi
   persistentVolumeReclaimPolicy: Retain
   storageClassName: model-csi-gcs-sc
   csi:
     driver: gcs.csi.ofek.dev
-    volumeHandle: csi-gcs
+    # Make sure this is globally unique or you may run into issues with volumes mounting / attaching
+    volumeHandle: context-model-directory
     nodePublishSecretRef:
       name: csi-gcs-secret
       namespace: context-server

@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: model-pv-claim-fluent
+  name: fluent-output
   namespace: metrics
 spec:
   accessModes:
@@ -11,11 +11,12 @@ spec:
     requests:
       storage: 10Gi
   storageClassName: model-csi-gcs-sc
+  volumeName: "fluent-bit-output"
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: model-csi-gcs-pv-fluent
+  name: fluent-bit-output
 spec:
   accessModes:
   - ReadWriteMany
@@ -25,7 +26,8 @@ spec:
   storageClassName: model-csi-gcs-sc
   csi:
     driver: gcs.csi.ofek.dev
-    volumeHandle: csi-gcs
+    # Make sure this is globally unique or you may run into issues with volumes mounting / attaching
+    volumeHandle: fluent-output
     nodePublishSecretRef:
-      name: csi-gcs-secret
+      name: csi-gcs-sensitive-logs-secret
       namespace: metrics

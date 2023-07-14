@@ -3,5 +3,6 @@ kind: Kustomization
 namespace: model-server
 resources:
   - deployment.yaml
+  - monitor.yaml
   - namespace.yaml
   - service.yaml
