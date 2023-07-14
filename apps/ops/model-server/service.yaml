@@ -1,0 +1,18 @@
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: model-server
+  name: model-server
+  namespace: model-server
+spec:
+  ports:
+    - name: newhttp
+      port: 8000
+      targetPort: newhttp
+    - name: grcp
+      port: 8001
+      targetPort: grcp
+  selector:
+    app: model-server
+  type: ClusterIP

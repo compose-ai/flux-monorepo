@@ -8,7 +8,7 @@ spec:
     spec:
       version: ">=1.0.0-alpha"
   test:
-    enable: false
+    enable: true
   values:
     ingress:
       hosts:
