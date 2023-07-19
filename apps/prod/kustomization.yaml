@@ -4,6 +4,7 @@ resources:
   - ../base/podinfo
   - ../base/csi-driver
   - ../base/flux
+  - ../base/loki
   - ../base/nvidia-dcgm
   - context-server
   - model-server

@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - ../base/podinfo
   - ../base/csi-driver
+  - ../base/loki
   - ../base/flux
   - ../base/nvidia-dcgm
   - context-server
