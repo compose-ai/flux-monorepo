@@ -1,0 +1,23 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: nvidia-dcgm
+  namespace: metrics
+  labels:
+    app.kubernetes.io/part-of: nvidia-dcgm
+spec:
+  endpoints:
+    - path: /metrics
+      targetPort: 9400
+  namespaceSelector:
+    matchNames:
+      - metrics
+  selector:
+    matchLabels:
+      app: nvidia-dcgm
+    matchExpressions:
+      - key: compose.ai/ignore-monitoring
+        operator: DoesNotExist
+        values:
+          - "ignore"
