@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/part-of: flux
 spec:
   podMetricsEndpoints:
-    - path: /
+    - path: /metrics
       targetPort: 8080
   namespaceSelector:
     matchNames:
