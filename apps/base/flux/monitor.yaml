@@ -1,0 +1,28 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: flux
+  namespace: flux-system
+  labels:
+    app.kubernetes.io/part-of: flux
+spec:
+  podMetricsEndpoints:
+    - path: /
+      targetPort: 8080
+  namespaceSelector:
+    matchNames:
+      - flux-system
+  selector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - "helm-controller"
+          - "kustomize-controller"
+          - "notification-controller"
+          - "source-controller"
+      - key: compose.ai/ignore-monitoring
+        operator: DoesNotExist
+        values:
+          - "ignore"
