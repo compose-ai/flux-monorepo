@@ -2,6 +2,31 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
+  name: loki
+  namespace: loki-stack
+  labels:
+    app.kubernetes.io/part-of: loki
+spec:
+  podMetricsEndpoints:
+    - path: /metrics
+      targetPort: 3100
+  namespaceSelector:
+    matchNames:
+      - loki-stack
+  selector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - "loki"
+      - key: compose.ai/ignore-monitoring
+        operator: DoesNotExist
+        values:
+          - "ignore"
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
   name: promtail
   namespace: loki-stack
   labels:
