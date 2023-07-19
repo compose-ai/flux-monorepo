@@ -15,7 +15,7 @@ spec:
       - metrics
   selector:
     matchLabels:
-      app: nvidia-dcgm
+      app: nvidia-dcgm-exporter
     matchExpressions:
       - key: compose.ai/ignore-monitoring
         operator: DoesNotExist
