@@ -6,6 +6,7 @@ resources:
   - ../base/loki
   - ../base/flux
   - ../base/nvidia-dcgm
+  - ../base/linkerd
   - context-server
   - model-server
   - fluent-bit
