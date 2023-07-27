@@ -4,3 +4,4 @@ namespace: linkerd
 resources:
   - crds.yaml
   - linkerd.yaml
+  - viz.yaml
