@@ -7,14 +7,14 @@ data:
   config.yaml: |-
     rules:
     - seriesQuery: |
-         histogram_quantile(0.5, contextserver_workload_total_histogram_seconds_bucket{namespace!="", pod!=""})
-      # resources:
-        # "overrides":
-          # "kubernetes_namespace": {resource: "namespace"}
-          # "kubernetes_pod_name": {resource: "pod"}
-      "name":
-        "matches": "^(.*)_total"
-        "as": ""
-      "metricsQuery": |
-        histogram_quantile(0.5, rate(contextserver_workload_total_histogram_seconds_bucket{<<.LabelMatchers>>}[5m]))
+        contextserver_workload_total_histogram_seconds_bucket{namespace!="", pod!=""}
+      resources:
+        overrides:
+          namespace: {resource: "namespace"}
+          pod: {resource: "pod"}
+      name:
+        matches: "^(.*)_total"
+        as: ""
+      metricsQuery: |
+        histogram_quantile(0.5, rate(<<.Series>>{<<.LabelMatchers>>}[5m]))
 
