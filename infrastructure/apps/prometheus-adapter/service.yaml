@@ -11,7 +11,7 @@ spec:
   ports:
   - name: https
     port: 443
-    targetPort: 6443
+    targetPort: 10250
   selector:
     app.kubernetes.io/component: metrics-adapter
     app.kubernetes.io/name: prometheus-adapter
