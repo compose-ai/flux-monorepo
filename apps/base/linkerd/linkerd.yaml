@@ -601,7 +601,7 @@ data:
           operator: NotIn
           values:
           - disabled
-    prometheusUrl: ""
+    prometheusUrl: "http://prometheus-kube-prometheus-prometheus.metrics.svc.cluster.local:9090"
     proxy:
       accessLog: ""
       await: true
@@ -1570,7 +1570,7 @@ spec:
             - "-controller-namespace=linkerd"
             - "-log-level=info"
             - "-log-format=plain"
-            - "-prometheus-url=http://prometheus.linkerd-viz.svc.cluster.local:9090"
+            - "-prometheus-url=http://prometheus-kube-prometheus-prometheus.metrics.svc.cluster.local:9090"
             securityContext:
               capabilities:
                 drop:

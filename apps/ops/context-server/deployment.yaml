@@ -19,6 +19,8 @@ spec:
     type: RollingUpdate
   template:
     metadata:
+      annotations:
+        linkerd.io/inject: enabled
       labels:
         app: context-server
     spec:
@@ -34,7 +36,7 @@ spec:
             topologyKey: "kubernetes.io/hostname"
       containers:
         - name: context-server
-          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/context-server:release-af9ebca
+          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/context-server:dev-85f9d07
           imagePullPolicy: IfNotPresent
           resources:
             requests:
@@ -66,7 +68,7 @@ spec:
             periodSeconds: 5
           env:
             - name: DYNACONF_MODEL_SERVER_URL
-              value: "model-server.model-server.svc.cluster.local:8001"
+              value: "model-server.model-server.svc.cluster.local:8000"
             - name: DYNACONF_NUM_RETURN_SEQUENCES_CIRCUIT_TIMEOUT_SECONDS
               value: "0.7"
             - name: DYNACONF_FLUENT_LOG_LOCATION
