@@ -5,6 +5,17 @@ metadata:
   namespace: monitoring
 data:
   config.yaml: |-
+    externalRules:
+    - seriesQuery: 'contextserver_workload_total_histogram_seconds_bucket'
+      resources:
+        namespaced: false
+        overrides:
+          pod:
+            resource: "pod"
+      name:
+        matches: "^(.*)_bucket"
+        as: "${1}_p50"
+      metricsQuery: 'histogram_quantile(0.5, rate(contextserver_workload_total_histogram_seconds_bucket{<<.LabelMatchers>>}[5m]))'
     rules:
     - seriesQuery: '{__name__="contextserver_workload_total_histogram_seconds_bucket",namespace!="",pod!=""}'
       resources:
