@@ -10,15 +10,12 @@ spec:
   minReplicas: 1
   maxReplicas: 2
   metrics:
-  - type: External
-    external:
+  - type: Pods
+    pods:
       metric:
-        name: contextserver_workload_total_histogram_seconds_p50
-        selector:
-          matchLabels:
-            namespace: context-server
-      # target a p50 below 0.8 seconds
+        name: avg_time_queue_us
+      # target an average queue time below 200ms (metric is microseconds)
       target:
         type: Value
-        averageValue: 800m
+        averageValue: 200000
 
