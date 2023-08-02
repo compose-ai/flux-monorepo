@@ -28,7 +28,7 @@ data:
         matches: "contextserver_connected_clients"
         as: "avg_connected_clients"
       metricsQuery: 'contextserver_connected_clients{<<.LabelMatchers>>}'
-    - seriesQuery: 'nv_inference_queue_duration_us{namespace="default",pod!=""}'
+    - seriesQuery: '{__name__="nv_inference_queue_duration_us",namespace!="",pod!=""}'
       resources:
         overrides:
           namespace:

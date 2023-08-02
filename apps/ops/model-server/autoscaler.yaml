@@ -16,6 +16,9 @@ spec:
     pods:
       metric:
         name: contextserver_workload_total_histogram_seconds_p50
+        selector:
+          labelSelector:
+            namespace: context-server
       # target a p50 below 0.8 seconds
       target:
         type: Value
