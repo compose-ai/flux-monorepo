@@ -15,7 +15,7 @@ spec:
   - type: Pods
     pods:
       metric:
-        name: contextserver_connected_clients
+        name: avg_connected_clients
       # target 5000 connected clients per server
       target:
         type: Value

@@ -15,7 +15,7 @@ spec:
   - type: Pods
     pods:
       metric:
-        name: contextserver_workload_total_histogram_seconds_bucket
+        name: contextserver_workload_total_histogram_seconds_p50
       # target a p50 below 0.8 seconds
       target:
         type: Value
