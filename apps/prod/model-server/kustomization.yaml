@@ -6,3 +6,4 @@ resources:
   - monitor.yaml
   - namespace.yaml
   - service.yaml
+  - autoscaler.yaml
