@@ -9,6 +9,15 @@ spec:
     name: context-server
   minReplicas: 4
   maxReplicas: 9
+  behavior:
+    scaleDown:
+      policies:
+      - type: Pods
+        value: 2
+        periodSeconds: 60
+      - type: Percent
+        value: 10
+        periodSeconds: 60
   metrics:
   # use a "Pods" metric, which takes the average of the
   # given metric across all pods controlled by the autoscaling target
