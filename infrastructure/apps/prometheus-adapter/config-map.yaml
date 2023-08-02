@@ -6,15 +6,15 @@ metadata:
 data:
   config.yaml: |-
     rules:
-    - seriesQuery: |
-        contextserver_workload_total_histogram_seconds_bucket{namespace!="", pod!=""}
+    - seriesQuery: '{__name__="contextserver_workload_total_histogram_seconds_bucket",namespace!="",pod!=""}'
       resources:
         overrides:
-          namespace: {resource: "namespace"}
-          pod: {resource: "pod"}
+          namespace:
+            resource: "namespace"
+          pod:
+            resource: "pod"
       name:
-        matches: "^(.*)_total"
-        as: ""
-      metricsQuery: |
-        histogram_quantile(0.5, rate(<<.Series>>{<<.LabelMatchers>>}[5m]))
+        matches: "^(.*)_bucket"
+        as: "${1}_p50"
+      metricsQuery: 'histogram_quantile(0.5, rate(contextserver_workload_total_histogram_seconds_bucket{<<.LabelMatchers>>}[5m]))'
 
