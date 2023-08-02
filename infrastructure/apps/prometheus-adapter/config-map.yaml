@@ -17,4 +17,29 @@ data:
         matches: "^(.*)_bucket"
         as: "${1}_p50"
       metricsQuery: 'histogram_quantile(0.5, rate(contextserver_workload_total_histogram_seconds_bucket{<<.LabelMatchers>>}[5m]))'
+    - seriesQuery: '{__name__="contextserver_connected_clients",namespace!="",pod!=""}'
+      resources:
+        overrides:
+          namespace:
+            resource: "namespace"
+          pod:
+            resource: "pod"
+      name:
+        matches: "contextserver_connected_clients"
+        as: "avg_connected_clients"
+      metricsQuery: 'contextserver_connected_clients{<<.LabelMatchers>>}'
+    - seriesQuery: 'nv_inference_queue_duration_us{namespace="default",pod!=""}'
+      resources:
+        overrides:
+          namespace:
+            resource: "namespace"
+          pod:
+            resource: "pod"
+      name:
+        matches: "nv_inference_queue_duration_us"
+        as: "avg_time_queue_us"
+      metricsQuery: 'avg(delta(nv_inference_queue_duration_us{<<.LabelMatchers>>}[30s])/
+ (1+delta(nv_inference_request_success{<<.LabelMatchers>>}[30s]))) by (<<.GroupBy>>)'
+
+
 
