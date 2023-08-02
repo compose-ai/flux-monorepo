@@ -14,6 +14,9 @@ spec:
     pods:
       metric:
         name: avg_time_queue_us
+        selector:
+          matchLabels:
+            model: fasttransformer_generate
       # target an average queue time below 200ms (metric is microseconds)
       target:
         type: Value
