@@ -40,4 +40,11 @@ spec:
       target:
         type: Value
         averageValue: 5000
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: AverageValue
+        averageValue: 4Gi
+
 
