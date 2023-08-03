@@ -37,8 +37,8 @@ spec:
         selector:
           matchLabels:
             model: fasttransformer_generate
-      # target an average queue time below 200ms (metric is microseconds)
+      # target an average queue time of around 150ms (metric is microseconds)
       target:
         type: Value
-        averageValue: 200000
+        averageValue: 150000
 
