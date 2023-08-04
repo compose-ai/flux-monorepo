@@ -14,11 +14,12 @@ spec:
       stabilizationWindowSeconds: 300
       policies:
       - type: Pods
-        value: 2
+        value: 3
         periodSeconds: 120
       - type: Percent
         value: 10
         periodSeconds: 120
+      selectPolicy: Min
     scaleUp:
       stabilizationWindowSeconds: 0
       policies:
