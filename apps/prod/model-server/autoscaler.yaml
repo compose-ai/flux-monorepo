@@ -48,10 +48,10 @@ spec:
         selector:
           matchLabels:
             model: fasttransformer_generate
-      # target an average of 3000 requests per server
+      # target an average of 8 requests per second averaged over 5m interval
       target:
         type: AverageValue
-        averageValue: 3000
+        averageValue: 2400
   - type: Pods
     pods:
       metric:
@@ -59,8 +59,8 @@ spec:
         selector:
           matchLabels:
             model: fasttransformer_generate
-      # target an average total latency of around 550ms (metric is microseconds)
+      # target an average total latency of around 150ms per request (metric is microseconds)
       target:
         type: AverageValue
-        averageValue: 550000
+        averageValue: 150000
 

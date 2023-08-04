@@ -38,7 +38,7 @@ data:
       name:
         matches: "nv_inference_queue_duration_us"
         as: "avg_time_queue_us"
-      metricsQuery: 'avg(delta(nv_inference_queue_duration_us{<<.LabelMatchers>>}[5m])/(1+delta(nv_inference_request_success{<<.LabelMatchers>>}[5m]))) by (<<.GroupBy>>)'
+      metricsQuery: 'avg(increase(nv_inference_queue_duration_us{<<.LabelMatchers>>}[5m])) by (<<.GroupBy>>) / (1 + avg(delta(nv_inference_request_success{<<.LabelMatchers>>}[5m])) by (<<.GroupBy>>))'
     - seriesQuery: '{__name__="nv_inference_request_success",namespace!="",pod!=""}'
       resources:
         overrides:
@@ -60,5 +60,5 @@ data:
       name:
         matches: "nv_inference_request_duration_us"
         as: "model_server_total_latency"
-      metricsQuery: 'avg(rate(nv_inference_request_duration_us{<<.LabelMatchers>>}[5m])) by (<<.GroupBy>>)'
+      metricsQuery: 'avg(increase(nv_inference_request_duration_us{<<.LabelMatchers>>}[5m])) by (<<.GroupBy>>) / (1 + avg(delta(nv_inference_request_success{<<.LabelMatchers>>}[5m])) by (<<.GroupBy>>))'
 
