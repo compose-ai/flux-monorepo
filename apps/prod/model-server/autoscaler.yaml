@@ -39,6 +39,6 @@ spec:
             model: fasttransformer_generate
       # target an average queue time of around 150ms (metric is microseconds)
       target:
-        type: Value
+        type: AverageValue
         averageValue: 150000
 
