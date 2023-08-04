@@ -38,21 +38,21 @@ spec:
         selector:
           matchLabels:
             model: fasttransformer_generate
-      # target an average queue time of around 150ms (metric is microseconds)
+      # target an average queue time of around 75ms (metric is microseconds)
       target:
         type: AverageValue
-        averageValue: 150000
+        averageValue: 75000
   - type: Pods
     pods:
       metric:
-        name: model_server_requests
+        name: model_server_requests_per_sec
         selector:
           matchLabels:
             model: fasttransformer_generate
-      # target an average of 8 requests per second averaged over 5m interval
+      # target an average of 12 requests per second averaged over 5m interval
       target:
         type: AverageValue
-        averageValue: 2400
+        averageValue: 12
   - type: Pods
     pods:
       metric:
@@ -63,5 +63,5 @@ spec:
       # target an average total latency of around 150ms per request (metric is microseconds)
       target:
         type: AverageValue
-        averageValue: 150000
+        averageValue: 200000
 
