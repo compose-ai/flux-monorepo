@@ -41,4 +41,26 @@ spec:
       target:
         type: AverageValue
         averageValue: 150000
+  - type: Pods
+    pods:
+      metric:
+        name: nv_inference_request_success
+        selector:
+          matchLabels:
+            model: fasttransformer_generate
+      # target an average queue time of around 150ms (metric is microseconds)
+      target:
+        type: AverageValue
+        averageValue: 3000
+  - type: Pods
+    pods:
+      metric:
+        name: model_server_total_latency
+        selector:
+          matchLabels:
+            model: fasttransformer_generate
+      # target an average queue time of around 150ms (metric is microseconds)
+      target:
+        type: AverageValue
+        averageValue: 550
 
