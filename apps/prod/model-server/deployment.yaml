@@ -28,7 +28,7 @@ spec:
         cloud.google.com/gke-nodepool: compose
       containers:
         - name: model-server
-          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/compose-triton:release-902d4be
+          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/compose-triton:release-459d05c
           imagePullPolicy: IfNotPresent
           resources:
             requests:
