@@ -38,7 +38,7 @@ spec:
         name: avg_connected_clients
       # target 5000 connected clients per server
       target:
-        type: Value
+        type: AverageValue
         averageValue: 5000
   - type: Resource
     resource:
