@@ -48,7 +48,7 @@ spec:
         selector:
           matchLabels:
             model: fasttransformer_generate
-      # target an average queue time of around 150ms (metric is microseconds)
+      # target an average of 3000 requests per server
       target:
         type: AverageValue
         averageValue: 3000
@@ -59,8 +59,8 @@ spec:
         selector:
           matchLabels:
             model: fasttransformer_generate
-      # target an average queue time of around 150ms (metric is microseconds)
+      # target an average total latency of around 550ms (metric is microseconds)
       target:
         type: AverageValue
-        averageValue: 550
+        averageValue: 550000
 
