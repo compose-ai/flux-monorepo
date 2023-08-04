@@ -44,7 +44,7 @@ spec:
   - type: Pods
     pods:
       metric:
-        name: nv_inference_request_success
+        name: model_server_requests
         selector:
           matchLabels:
             model: fasttransformer_generate
