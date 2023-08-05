@@ -8,7 +8,7 @@ spec:
     kind: Deployment
     name: context-server
   minReplicas: 9
-  maxReplicas: 9
+  maxReplicas: 5
   behavior:
     scaleDown:
       stabilizationWindowSeconds: 300
