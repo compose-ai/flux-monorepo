@@ -15,7 +15,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 100%
-      maxUnavailable: 0
+      maxUnavailable: 5
     type: RollingUpdate
   template:
     metadata:
@@ -28,7 +28,7 @@ spec:
         cloud.google.com/gke-nodepool: compose
       containers:
         - name: model-server
-          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/compose-triton:release-b47fc47
+          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/compose-triton:release-27a4968
           imagePullPolicy: IfNotPresent
           resources:
             requests:
