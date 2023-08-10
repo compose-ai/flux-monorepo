@@ -8,7 +8,7 @@ spec:
     kind: Deployment
     name: model-server
   minReplicas: 1
-  maxReplicas: 2
+  maxReplicas: 1
   metrics:
   - type: Pods
     pods:

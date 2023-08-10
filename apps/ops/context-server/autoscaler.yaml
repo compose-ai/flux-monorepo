@@ -8,7 +8,7 @@ spec:
     kind: Deployment
     name: context-server
   minReplicas: 1
-  maxReplicas: 2
+  maxReplicas: 1
   metrics:
   # use a "Pods" metric, which takes the average of the
   # given metric across all pods controlled by the autoscaling target
