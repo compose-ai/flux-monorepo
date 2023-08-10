@@ -273,7 +273,7 @@ data:
       health_check:
     exporters:
       jaeger:
-        endpoint: jaeger-collector.jaeger.svc.cluster.local:14268
+        endpoint: http://jaeger-collector.jaeger.svc.cluster.local:14268/api/traces
         tls:
           insecure: true
     service:
