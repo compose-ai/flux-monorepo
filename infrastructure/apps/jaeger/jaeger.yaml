@@ -5,22 +5,22 @@ metadata:
   namespace: jaeger
 spec:
   strategy: production
-  prometheus:
-    server-url: "http://prometheus-kube-prometheus-prometheus.metrics.svc.cluster.local:9090"
-  metricsStorage:
-    type: prometheus
+  #prometheus:
+    #server-url: "http://prometheus-kube-prometheus-prometheus.metrics.svc.cluster.local:9090"
+  #metricsStorage:
+    #type: prometheus
   collector:
     maxReplicas: 9
     resources:
       limits:
         cpu: 100m
         memory: 128Mi
-    storage:
-      options:
-        memory:
-          max-traces: 100000
-  query:
-    base-path: /jaeger
+    #storage:
+      #options:
+        #memory:
+          #max-traces: 100000
+  #query:
+    #base-path: /jaeger
   agent:
     volumeMounts:
     - name: agent-volume
