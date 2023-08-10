@@ -7,7 +7,7 @@ metadata:
   name: model-server
   namespace: model-server
 spec:
-  replicas: 1
+  replicas: 40
   revisionHistoryLimit: 10
   selector:
     matchLabels:
@@ -15,10 +15,12 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 100%
-      maxUnavailable: 0
+      maxUnavailable: 5
     type: RollingUpdate
   template:
     metadata:
+      annotations:
+        linkerd.io/inject: enabled
       labels:
         app: model-server
     spec:
@@ -26,7 +28,7 @@ spec:
         cloud.google.com/gke-nodepool: compose
       containers:
         - name: model-server
-          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/compose-triton:release-0.0.7-dev-cf88f29-l4
+          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/compose-triton:release-b47fc47
           imagePullPolicy: IfNotPresent
           resources:
             requests:
@@ -80,6 +82,9 @@ spec:
             - name: cupy
               mountPath: /.cupy
               readOnly: false
+            - name: transformers-cache
+              mountPath: /.cache/huggingface/hub
+              readOnly: false
             - mountPath: /dev/shm
               name: dshm
           securityContext:
@@ -90,6 +95,8 @@ spec:
         - name: fluentbitonlylogs
           emptyDir: {}
         - name: cupy
+          emptyDir: {}
+        - name: transformers-cache
           emptyDir: {}
         - name: models
           persistentVolumeClaim:
