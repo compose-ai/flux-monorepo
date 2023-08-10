@@ -21,7 +21,7 @@ spec:
     metadata:
       annotations:
         linkerd.io/inject: enabled
-        sidecar.jaegertracing.io/inject: true
+        "sidecar.jaegertracing.io/inject": "true"
       labels:
         app: context-server
     spec:
