@@ -15457,9 +15457,7 @@ spec:
         - /jaeger-operator
         env:
         - name: WATCH_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.annotations['olm.targetNamespaces']
+          value: ""
         - name: POD_NAMESPACE
           valueFrom:
             fieldRef:
