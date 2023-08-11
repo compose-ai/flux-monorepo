@@ -4,6 +4,7 @@ metadata:
   name: opentel
   namespace: context-server
 spec:
+  mode: sidecar
   config: |
     receivers:
       otlp:
