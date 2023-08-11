@@ -43,7 +43,7 @@ spec:
         kubernetes.io/os: linux
       containers:
       - args:
-        - -collector-svc-addr=jaeger-collector.jaeger:14250
+        - -collector-svc-addr=collector.linkerd-jaeger:55678
         - -collector-svc-account=collector
         - -log-level=debug
         - -cluster-domain=cluster.local
@@ -273,8 +273,7 @@ data:
       health_check:
     exporters:
       jaeger:
-        endpoint: jaeger-collector.jaeger.svc.cluster.local:14250
-        #collector-endpoint: http://jaeger-collector.jaeger.svc.cluster.local:14268/api/traces
+        endpoint: http://jaeger-collector.jaeger.svc.cluster.local:14268/api/traces
         tls:
           insecure: true
     service:
