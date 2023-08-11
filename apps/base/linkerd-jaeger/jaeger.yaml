@@ -43,7 +43,7 @@ spec:
         kubernetes.io/os: linux
       containers:
       - args:
-        - -collector-svc-addr=collector.linkerd-jaeger:55678
+        - -collector-svc-addr=collector.linkerd-jaeger.svc.cluster.local:55678
         - -collector-svc-account=collector
         - -log-level=debug
         - -cluster-domain=cluster.local
