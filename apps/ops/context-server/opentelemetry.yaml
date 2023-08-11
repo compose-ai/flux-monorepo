@@ -30,7 +30,7 @@ spec:
       health_check:
     exporters:
       jaeger:
-        endpoint: jaeger-collector.jaeger.svc.cluster.local:14268
+        endpoint: jaeger-collector.jaeger.svc.cluster.local:14250
         tls:
           insecure: true
     service:
