@@ -21,7 +21,6 @@ spec:
     metadata:
       annotations:
         linkerd.io/inject: enabled
-        config.linkerd.io/trace-collector: jaeger-collector.jaeger.svc.cluster.local:14250
         "sidecar.jaegertracing.io/inject": "true"
       labels:
         app: model-server
