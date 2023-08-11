@@ -5,3 +5,5 @@ resources:
   - prometheus-adapter
   - jaeger-operator
   - jaeger
+  - opentelemetry-operator
+  - opentelemetry
