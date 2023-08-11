@@ -6,4 +6,3 @@ resources:
   - jaeger-operator
   - jaeger
   - opentelemetry-operator
-  - opentelemetry

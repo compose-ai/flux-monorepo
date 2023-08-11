@@ -6,4 +6,5 @@ resources:
   - deployment.yaml
   - monitor.yaml
   - namespace.yaml
+  - opentelemetry.yaml
   - service.yaml
