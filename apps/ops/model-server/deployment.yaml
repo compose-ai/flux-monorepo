@@ -21,7 +21,7 @@ spec:
     metadata:
       annotations:
         linkerd.io/inject: enabled
-        sidecar.opentelemetry.io/inject: "context-server/opentel"
+        sidecar.opentelemetry.io/inject: "model-server/opentel"
       labels:
         app: model-server
     spec:
