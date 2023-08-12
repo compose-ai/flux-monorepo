@@ -7,8 +7,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: context-server
-  minReplicas: 1
-  maxReplicas: 1
+  minReplicas: 3
+  maxReplicas: 3
   metrics:
   # use a "Pods" metric, which takes the average of the
   # given metric across all pods controlled by the autoscaling target
