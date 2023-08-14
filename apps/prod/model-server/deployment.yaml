@@ -21,6 +21,7 @@ spec:
     metadata:
       annotations:
         linkerd.io/inject: enabled
+        sidecar.opentelemetry.io/inject: "model-server/opentel"
       labels:
         app: model-server
     spec:
@@ -28,7 +29,7 @@ spec:
         cloud.google.com/gke-nodepool: compose
       containers:
         - name: model-server
-          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/compose-triton:release-b47fc47
+          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/compose-triton:release-1c39466
           imagePullPolicy: IfNotPresent
           resources:
             requests:

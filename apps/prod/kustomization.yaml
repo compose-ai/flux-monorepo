@@ -2,11 +2,12 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ../base/csi-driver
-  - ../base/flux
   - ../base/loki
+  - ../base/flux
   - ../base/nvidia-dcgm
-  # - ../base/linkerd
-  # - ../base/linkerd-viz
+  - ../base/linkerd
+  - ../base/linkerd-viz
+  - ../base/linkerd-jaeger
   - context-server
   - model-server
   - fluent-bit

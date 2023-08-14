@@ -9,6 +9,27 @@ spec:
     name: model-server
   minReplicas: 1
   maxReplicas: 1
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 600
+      policies:
+      - type: Pods
+        value: 3
+        periodSeconds: 120
+      - type: Percent
+        value: 10
+        periodSeconds: 120
+      selectPolicy: Min
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 15
+      - type: Pods
+        value: 5
+        periodSeconds: 15
+      selectPolicy: Max
   metrics:
   - type: Pods
     pods:
@@ -17,8 +38,29 @@ spec:
         selector:
           matchLabels:
             model: fasttransformer_generate
-      # target an average queue time below 200ms (metric is microseconds)
+      # target an average queue time as low as possible, but has to be reasonable, not 0 (metric is microseconds)
       target:
-        type: Value
-        averageValue: 200000
-
+        type: AverageValue
+        averageValue: 25000
+  - type: Pods
+    pods:
+      metric:
+        name: model_server_requests_per_sec
+        selector:
+          matchLabels:
+            model: fasttransformer_generate
+      # target an average of 15 requests per second averaged over 5m interval
+      target:
+        type: AverageValue
+        averageValue: 15
+  - type: Pods
+    pods:
+      metric:
+        name: model_server_total_latency
+        selector:
+          matchLabels:
+            model: fasttransformer_generate
+      # target an average total latency of around 150ms per request (metric is microseconds)
+      target:
+        type: AverageValue
+        averageValue: 150000

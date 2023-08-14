@@ -83,6 +83,9 @@ spec:
             - name: cupy
               mountPath: /.cupy
               readOnly: false
+            - name: transformers-cache
+              mountPath: /.cache/huggingface/hub
+              readOnly: false
             - mountPath: /dev/shm
               name: dshm
           securityContext:
@@ -93,6 +96,8 @@ spec:
         - name: fluentbitonlylogs
           emptyDir: {}
         - name: cupy
+          emptyDir: {}
+        - name: transformers-cache
           emptyDir: {}
         - name: models
           persistentVolumeClaim:
