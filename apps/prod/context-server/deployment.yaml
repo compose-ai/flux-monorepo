@@ -7,7 +7,7 @@ metadata:
   name: context-server
   namespace: context-server
 spec:
-  replicas: 4
+  replicas: 9
   revisionHistoryLimit: 10
   selector:
     matchLabels:
@@ -15,7 +15,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 100%
-      maxUnavailable: 0
+      maxUnavailable: 9
     type: RollingUpdate
   template:
     metadata:
