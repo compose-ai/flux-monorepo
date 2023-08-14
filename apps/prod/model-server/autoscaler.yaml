@@ -11,7 +11,7 @@ spec:
   maxReplicas: 45
   behavior:
     scaleDown:
-      stabilizationWindowSeconds: 300
+      stabilizationWindowSeconds: 600
       policies:
       - type: Pods
         value: 3
@@ -38,10 +38,10 @@ spec:
         selector:
           matchLabels:
             model: fasttransformer_generate
-      # target an average queue time of around 75ms (metric is microseconds)
+      # target an average queue time as low as possible, but has to be reasonable, not 0 (metric is microseconds)
       target:
         type: AverageValue
-        averageValue: 75000
+        averageValue: 25000
   - type: Pods
     pods:
       metric:
@@ -49,10 +49,10 @@ spec:
         selector:
           matchLabels:
             model: fasttransformer_generate
-      # target an average of 12 requests per second averaged over 5m interval
+      # target an average of 15 requests per second averaged over 5m interval
       target:
         type: AverageValue
-        averageValue: 12
+        averageValue: 15
   - type: Pods
     pods:
       metric:
@@ -63,5 +63,5 @@ spec:
       # target an average total latency of around 150ms per request (metric is microseconds)
       target:
         type: AverageValue
-        averageValue: 200000
+        averageValue: 150000
 

@@ -7,7 +7,7 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: context-server
-  minReplicas: 9
+  minReplicas: 7
   maxReplicas: 9
   behavior:
     scaleDown:
@@ -15,13 +15,13 @@ spec:
       policies:
       - type: Pods
         value: 2
-        periodSeconds: 150
+        periodSeconds: 300
       - type: Percent
         value: 10
-        periodSeconds: 150
+        periodSeconds: 300
       selectPolicy: Min
     scaleUp:
-      stabilizationWindowSeconds: 0
+      stabilizationWindowSeconds: 10
       policies:
       - type: Percent
         value: 50
@@ -37,15 +37,13 @@ spec:
     pods:
       metric:
         name: avg_connected_clients
-      # target 5000 connected clients per server
+      # target 3000 connected clients per server
       target:
         type: AverageValue
-        averageValue: 5000
+        averageValue: 3000
   - type: Resource
     resource:
       name: memory
       target:
         type: AverageValue
         averageValue: 4Gi
-
-
