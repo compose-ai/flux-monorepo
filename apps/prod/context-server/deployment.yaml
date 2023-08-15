@@ -37,7 +37,7 @@ spec:
             topologyKey: "kubernetes.io/hostname"
       containers:
         - name: context-server
-          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/context-server:release-1c39466
+          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/context-server:release-c5500b0
           imagePullPolicy: IfNotPresent
           resources:
             requests:
@@ -78,6 +78,10 @@ spec:
               value: "true"
             - name: DYNACONF_LOG_LEVEL
               value: "INFO"
+            - name: OTEL_PROPAGATORS
+              value: "b3,b3multi"
+            - name: OTEL_TRACES_SAMPLER
+              value: "parentbased_always_on"
           volumeMounts:
             - mountPath: /fluent-bit-input-logs
               name: fluentbitonlylogs
