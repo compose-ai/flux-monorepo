@@ -7,8 +7,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: model-server
-  minReplicas: 35
-  maxReplicas: 35
+  minReplicas: 25
+  maxReplicas: 25
   behavior:
     scaleDown:
       stabilizationWindowSeconds: 600
