@@ -81,10 +81,10 @@ spec:
             - name: OTEL_PROPAGATORS
               value: "b3,b3multi"
             - name: OTEL_TRACES_SAMPLER
-              #value: "parentbased_always_on"
-              value: "traceidratio"
-            - name: OTEL_TRACES_SAMPLER_ARG
-              value: "0.1"
+              value: "parentbased_always_on"
+              #value: "traceidratio"
+            #- name: OTEL_TRACES_SAMPLER_ARG
+              #value: "0.1"
           volumeMounts:
             - mountPath: /fluent-bit-input-logs
               name: fluentbitonlylogs
