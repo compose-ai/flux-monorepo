@@ -37,7 +37,7 @@ spec:
             topologyKey: "kubernetes.io/hostname"
       containers:
         - name: context-server
-          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/context-server:release-c5500b0
+          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/context-server:release-50fac60
           imagePullPolicy: IfNotPresent
           resources:
             requests:
@@ -69,7 +69,7 @@ spec:
             periodSeconds: 5
           env:
             - name: DYNACONF_MODEL_SERVER_URL
-              value: "model-server.model-server.svc.cluster.local:8001"
+              value: "model-server.model-server.svc.cluster.local:8000"
             - name: DYNACONF_NUM_RETURN_SEQUENCES_CIRCUIT_TIMEOUT_SECONDS
               value: "0.7"
             - name: DYNACONF_FLUENT_LOG_LOCATION
