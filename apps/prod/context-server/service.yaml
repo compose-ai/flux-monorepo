@@ -1,6 +1,8 @@
 kind: Service
 apiVersion: v1
 metadata:
+  annotations:
+    config.linkerd.io/opaque-ports: "8080"
   labels:
     app: context-server
   name: context-server
