@@ -6,17 +6,15 @@ metadata:
 data:
   config.yaml: |-
     rules:
-    - seriesQuery: '{__name__="contextserver_workload_total_histogram_seconds_bucket",namespace!="",pod!=""}'
+    - seriesQuery: '{__name__="contextserver_message_dropped_total",namespace!="",pod!="",autoscaling="model-server"}'
       resources:
         overrides:
-          namespace:
+          autoscaling:
             resource: "namespace"
-          pod:
-            resource: "pod"
       name:
-        matches: "^(.*)_bucket"
-        as: "${1}_p50"
-      metricsQuery: 'histogram_quantile(0.5, rate(contextserver_workload_total_histogram_seconds_bucket{<<.LabelMatchers>>}[5m]))'
+        matches: "contextserver_message_dropped_total"
+        as: "contextserver_dropped_messages_over_5m"
+      metricsQuery: 'sum(rate(contextserver_message_dropped_total[5m])) / sum(rate(contextserver_message_received_autocomplete_total[5m]))'
     - seriesQuery: '{__name__="contextserver_connected_clients",namespace!="",pod!=""}'
       resources:
         overrides:
@@ -38,18 +36,7 @@ data:
       name:
         matches: "nv_inference_queue_duration_us"
         as: "avg_time_queue_us"
-      metricsQuery: '((increase(nv_inference_queue_duration_us{<<.LabelMatchers>>}[5m])) / (1 + (increase(nv_inference_request_success{<<.LabelMatchers>>}[5m]))))'
-    - seriesQuery: '{__name__="nv_inference_request_success",namespace!="",pod!=""}'
-      resources:
-        overrides:
-          namespace:
-            resource: "namespace"
-          pod:
-            resource: "pod"
-      name:
-        matches: "nv_inference_request_success"
-        as: "model_server_requests_per_sec"
-      metricsQuery: 'rate(nv_inference_request_success{<<.LabelMatchers>>}[5m])'
+      metricsQuery: '((increase(nv_inference_queue_duration_us{<<.LabelMatchers>>,model="fasttransformer_generate"}[5m])) / (1 + (increase(nv_inference_request_success{<<.LabelMatchers>>,model="fasttransformer_generate"}[5m]))))'
     - seriesQuery: '{__name__="nv_inference_request_duration_us",namespace!="",pod!=""}'
       resources:
         overrides:
@@ -60,5 +47,5 @@ data:
       name:
         matches: "nv_inference_request_duration_us"
         as: "model_server_total_latency"
-      metricsQuery: '((increase(nv_inference_request_duration_us{<<.LabelMatchers>>}[5m])) / (1 + (increase(nv_inference_request_success{<<.LabelMatchers>>}[5m]))))'
+      metricsQuery: '((increase(nv_inference_request_duration_us{<<.LabelMatchers>>,model="fasttransformer_generate"}[5m])) / (1 + (increase(nv_inference_request_success{<<.LabelMatchers>>,model="fasttransformer_generate"}[5m]))))'
 

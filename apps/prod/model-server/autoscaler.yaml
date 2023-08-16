@@ -34,28 +34,6 @@ spec:
   - type: Pods
     pods:
       metric:
-        name: avg_time_queue_us
-        selector:
-          matchLabels:
-            model: fasttransformer_generate
-      # target an average queue time as low as possible, but has to be reasonable, not 0 (metric is microseconds)
-      target:
-        type: AverageValue
-        averageValue: 25000
-  - type: Pods
-    pods:
-      metric:
-        name: model_server_requests_per_sec
-        selector:
-          matchLabels:
-            model: fasttransformer_generate
-      # target an average of 15 requests per second averaged over 5m interval
-      target:
-        type: AverageValue
-        averageValue: 15
-  - type: Pods
-    pods:
-      metric:
         name: model_server_total_latency
         selector:
           matchLabels:
@@ -64,4 +42,14 @@ spec:
       target:
         type: AverageValue
         averageValue: 150000
-
+  - type: Pods
+    pods:
+      metric:
+        name: avg_time_queue_us
+        selector:
+          matchLabels:
+            model: fasttransformer_generate
+      # target an average queue time as low as possible, but has to be reasonable, not 0 (metric is microseconds)
+      target:
+        type: AverageValue
+        averageValue: 25000
