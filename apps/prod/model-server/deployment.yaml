@@ -7,7 +7,6 @@ metadata:
   name: model-server
   namespace: model-server
 spec:
-  replicas: 45
   revisionHistoryLimit: 10
   selector:
     matchLabels:
