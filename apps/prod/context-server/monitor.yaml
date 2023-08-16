@@ -11,8 +11,8 @@ spec:
     - path: /metrics
       targetPort: 9900
       metricRelabelings:
-        targetLabel: autoscaling
-        replacement: model-server
+        - targetLabel: autoscaling
+          replacement: model-server
   namespaceSelector:
     matchNames:
       - context-server
