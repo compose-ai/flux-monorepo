@@ -23,6 +23,7 @@ spec:
       sourceRef:
         kind: GitRepository
         name: predictive-horizontal-pod-autoscaler
+        namespace: flux-system
       interval: 24h
   # https://github.com/weaveworks/weave-gitops/blob/main/charts/gitops-server/values.yaml
   values:
