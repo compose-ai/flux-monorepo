@@ -1,4 +1,13 @@
+# Build from v0.13.2 of https://github.com/jthomperoo/predictive-horizontal-pod-autoscaler
 ---
+# Source: predictive-horizontal-pod-autoscaler/templates/cluster/service_account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: predictive-horizontal-pod-autoscaler-cluster
+  namespace: autoscaling
+---
+# Source: predictive-horizontal-pod-autoscaler/templates/crd/jamiethompson.me_predictivehorizontalpodautoscalers.yaml
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -1480,3 +1489,189 @@ spec:
     storage: true
     subresources:
       status: {}
+---
+# Source: predictive-horizontal-pod-autoscaler/templates/cluster/role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: predictive-horizontal-pod-autoscaler
+  namespace: autoscaling
+rules:
+- apiGroups:
+  - apps
+  resources:
+  - deployments/scale
+  - replicaset/scale
+  - statefulset/scale
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - ""
+  resources:
+  - replicationcontrollers/scale
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - custom.metrics.k8s.io
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - external.metrics.k8s.io
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - jamiethompson.me
+  resources:
+  - predictivehorizontalpodautoscalers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - jamiethompson.me
+  resources:
+  - predictivehorizontalpodautoscalers/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - jamiethompson.me
+  resources:
+  - predictivehorizontalpodautoscalers/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - metrics.k8s.io
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+---
+# Source: predictive-horizontal-pod-autoscaler/templates/cluster/cluster_role_binding.yaml
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: predictive-horizontal-pod-autoscaler
+subjects:
+- kind: ServiceAccount
+  name: predictive-horizontal-pod-autoscaler-cluster
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: predictive-horizontal-pod-autoscaler
+  apiGroup: rbac.authorization.k8s.io
+---
+# Source: predictive-horizontal-pod-autoscaler/templates/cluster/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: predictive-horizontal-pod-autoscaler
+  namespace: autoscaling
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: predictive-horizontal-pod-autoscaler
+  template:
+    metadata:
+      labels:
+        name: predictive-horizontal-pod-autoscaler
+    spec:
+      serviceAccountName: predictive-horizontal-pod-autoscaler-cluster
+      containers:
+        - name: predictive-horizontal-pod-autoscaler
+          image: "jthomperoo/predictive-horizontal-pod-autoscaler:v0.13.2"
+          imagePullPolicy: IfNotPresent
+---
+# Source: predictive-horizontal-pod-autoscaler/templates/cluster/manifests.yaml
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  creationTimestamp: null
+  name: mutating-webhook-configuration
+webhooks:
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: webhook-service
+      namespace: system
+      path: /mutate-jamiethompson-me-jamiethompson-me-v1alpha1-predictivehorizontalpodautoscaler
+  failurePolicy: Fail
+  name: mpredictivehorizontalpodautoscaler.kb.io
+  rules:
+  - apiGroups:
+    - jamiethompson.me.jamiethompson.me
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - predictivehorizontalpodautoscalers
+  sideEffects: None
+---
+# Source: predictive-horizontal-pod-autoscaler/templates/cluster/manifests.yaml
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  creationTimestamp: null
+  name: validating-webhook-configuration
+  namespace: autoscaling
+webhooks:
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: webhook-service
+      namespace: system
+      path: /validate-jamiethompson-me-jamiethompson-me-v1alpha1-predictivehorizontalpodautoscaler
+  failurePolicy: Fail
+  name: vpredictivehorizontalpodautoscaler.kb.io
+  rules:
+  - apiGroups:
+    - jamiethompson.me.jamiethompson.me
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - predictivehorizontalpodautoscalers
+  sideEffects: None
