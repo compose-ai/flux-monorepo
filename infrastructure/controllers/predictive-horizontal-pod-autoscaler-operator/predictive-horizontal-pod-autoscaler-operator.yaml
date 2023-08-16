@@ -1591,7 +1591,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: predictive-horizontal-pod-autoscaler-cluster
-  namespace: default
+  namespace: autoscaling
 roleRef:
   kind: ClusterRole
   name: predictive-horizontal-pod-autoscaler
