@@ -1,0 +1,6 @@
+apiVersion: v2
+description: The Predictive Horizontal Pod Autoscaler Operator allows deployment of
+  Predictive Horizontal Pod Autoscalers
+name: predictive-horizontal-pod-autoscaler
+type: application
+version: v0.13.2

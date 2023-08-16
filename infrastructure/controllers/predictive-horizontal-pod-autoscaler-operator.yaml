@@ -4,17 +4,6 @@ kind: Namespace
 metadata:
   name: autoscaling
 ---
-apiVersion: source.toolkit.fluxcd.io/v1beta1
-kind: GitRepository
-metadata:
-  name: predictive-horizontal-pod-autoscaler
-  namespace: flux-system
-spec:
-  interval: 24h
-  url: https://github.com/jthomperoo/predictive-horizontal-pod-autoscaler
-  ref:
-    tag: v0.13.2
----
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
@@ -24,10 +13,10 @@ spec:
   interval: 24h
   chart:
     spec:
-      chart: ./helm
+      chart: ./helm/predictive-horizontal-pod-autoscaler
       sourceRef:
         kind: GitRepository
-        name: predictive-horizontal-pod-autoscaler
+        name: flux-system
         namespace: flux-system
       interval: 24h
   # https://github.com/jthomperoo/predictive-horizontal-pod-autoscaler/blob/v0.13.2/helm/values.yaml
