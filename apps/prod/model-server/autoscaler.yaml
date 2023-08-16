@@ -1,5 +1,5 @@
-kind: HorizontalPodAutoscaler
-apiVersion: autoscaling/v2
+kind: PredictiveHorizontalPodAutoscaler
+apiVersion: jamiethompson.me/v1alpha1
 metadata:
   name: model-server
 spec:
@@ -53,3 +53,25 @@ spec:
       target:
         type: AverageValue
         averageValue: 25000
+  # Predictive part
+  models:
+    - type: Linear
+      name: simple-linear
+      perSyncPeriod: 1
+      linear:
+        lookAhead: 30000
+        historySize: 6
+    #- type: HoltWinters
+      # name: simple-holt-winters
+      # perSyncPeriod: 1
+      # startInterval: 60s
+      # startIntervalResetDuration: 5m
+      # holtWinters:
+        # alpha: 0.9
+        # beta: 0.9
+        # gamma: 0.9
+        # seasonalPeriods: 6
+        # storedSeasons: 4
+        # trend: additive
+        # seasonal: additive
+  syncPeriod: 30000
