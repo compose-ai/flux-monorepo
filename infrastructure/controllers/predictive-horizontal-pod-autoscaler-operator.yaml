@@ -10,10 +10,10 @@ metadata:
   name: predictive-horizontal-pod-autoscaler
   namespace: flux-system
 spec:
-  interval: 60m0s
+  interval: 24h
   url: https://github.com/jthomperoo/predictive-horizontal-pod-autoscaler
   ref:
-    branch: master
+    branch: v0.13.2
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
@@ -24,18 +24,10 @@ spec:
   interval: 24h
   chart:
     spec:
-      chart: ./releases/download/v0.13.2/predictive-horizontal-pod-autoscaler-v0.13.2.tgz
+      chart: ./helm
       sourceRef:
         kind: GitRepository
         name: predictive-horizontal-pod-autoscaler
         namespace: flux-system
       interval: 24h
-  # https://github.com/weaveworks/weave-gitops/blob/main/charts/gitops-server/values.yaml
-  values:
-    resources:
-      requests:
-        cpu: 100m
-        memory: 64Mi
-      limits:
-        cpu: 1
-        memory: 512Mi
+  # https://github.com/jthomperoo/predictive-horizontal-pod-autoscaler/blob/v0.13.2/helm/values.yaml
