@@ -71,7 +71,7 @@ spec:
       name: simple-holt-winters
       # Only calculate and store 1/10th of points
       perSyncPeriod: 10
-      startInterval: 1d
+      startInterval: 24h
       resetDuration: 15m
       holtWinters:
         # TODO: Tune hyperparameters
