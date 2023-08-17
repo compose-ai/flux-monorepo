@@ -38,10 +38,10 @@ spec:
         selector:
           matchLabels:
             model: fasttransformer_generate
-      # target an average total latency of around 150ms per request (metric is microseconds)
+      # target an average total latency of around 180ms per request (metric is microseconds)
       target:
         type: AverageValue
-        averageValue: 150000
+        averageValue: 180000
   - type: Pods
     pods:
       metric:
