@@ -53,25 +53,36 @@ spec:
       target:
         type: AverageValue
         averageValue: 25000
+  # We can set tolerance and other normally cluster-wide attributes for scaling here
+  # Default is if the actual:desired metrics ratio is within 0.1 of 1.0 then it does nothing
+  tolerance: 0.05
   # Predictive part
+  # Err on the side of too many servers
+  decisionType: "maximum"
   models:
     - type: Linear
       name: simple-linear
       perSyncPeriod: 1
       linear:
-        lookAhead: 30000
-        historySize: 6
-    #- type: HoltWinters
-      # name: simple-holt-winters
-      # perSyncPeriod: 1
-      # startInterval: 60s
-      # startIntervalResetDuration: 5m
-      # holtWinters:
-        # alpha: 0.9
-        # beta: 0.9
-        # gamma: 0.9
-        # seasonalPeriods: 6
-        # storedSeasons: 4
-        # trend: additive
-        # seasonal: additive
+        # Look 10 minutes ahead because it takes about that long to scale up
+        lookAhead: 600000
+        historySize: 20
+    - type: HoltWinters
+      name: simple-holt-winters
+      # Only calculate and store 1/10th of points
+      perSyncPeriod: 10
+      startInterval: 1d
+      resetDuration: 15m
+      holtWinters:
+        # TODO: Tune hyperparameters
+        alpha: 0.9
+        beta: 0.9
+        gamma: 0.9
+        # 1 day seasons, based on 30s sync period
+        seasonalPeriods: 2880
+        # store 1 week of seasons
+        storedSeasons: 7
+        trend: additive
+        seasonal: additive
+  # Don't forget to change seasonlPeriods if you change this
   syncPeriod: 30000
