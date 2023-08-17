@@ -65,8 +65,8 @@ spec:
       name: simple-linear
       perSyncPeriod: 1
       linear:
-        # Look 10 minutes ahead because it takes about that long to scale up
-        lookAhead: 600000
+        # Look 3 minutes ahead because it takes about that long to scale up
+        lookAhead: 180000
         historySize: 20
     - type: HoltWinters
       name: simple-holt-winters
