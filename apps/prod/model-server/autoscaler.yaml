@@ -11,7 +11,8 @@ spec:
   maxReplicas: 45
   behavior:
     scaleDown:
-      stabilizationWindowSeconds: 600
+      # PHPA suggests setting this very low because linear regression should be more stable anyway
+      stabilizationWindowSeconds: 0
       policies:
       - type: Pods
         value: 3
