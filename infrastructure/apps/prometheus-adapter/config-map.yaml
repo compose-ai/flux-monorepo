@@ -13,8 +13,8 @@ data:
             resource: "namespace"
       name:
         matches: "contextserver_message_dropped_total"
-        as: "contextserver_dropped_messages_over_5m"
-      metricsQuery: 'sum(rate(contextserver_message_dropped_total[5m])) / sum(rate(contextserver_message_received_autocomplete_total[5m]))'
+        as: "contextserver_dropped_messages"
+      metricsQuery: 'sum(rate(contextserver_message_dropped_total[1m])) / sum(rate(contextserver_message_received_autocomplete_total[1m]))'
     - seriesQuery: '{__name__="contextserver_connected_clients",namespace!="",pod!=""}'
       resources:
         overrides:
@@ -36,7 +36,7 @@ data:
       name:
         matches: "nv_inference_queue_duration_us"
         as: "avg_time_queue_us"
-      metricsQuery: '((increase(nv_inference_queue_duration_us{<<.LabelMatchers>>,model="fasttransformer_generate"}[5m])) / (1 + (increase(nv_inference_request_success{<<.LabelMatchers>>,model="fasttransformer_generate"}[5m]))))'
+      metricsQuery: '((increase(nv_inference_queue_duration_us{<<.LabelMatchers>>,model="fasttransformer_generate"}[1m])) / (1 + (increase(nv_inference_request_success{<<.LabelMatchers>>,model="fasttransformer_generate"}[1m]))))'
     - seriesQuery: '{__name__="nv_inference_request_duration_us",namespace!="",pod!=""}'
       resources:
         overrides:
@@ -47,5 +47,5 @@ data:
       name:
         matches: "nv_inference_request_duration_us"
         as: "model_server_total_latency"
-      metricsQuery: '((increase(nv_inference_request_duration_us{<<.LabelMatchers>>,model="fasttransformer_generate"}[5m])) / (1 + (increase(nv_inference_request_success{<<.LabelMatchers>>,model="fasttransformer_generate"}[5m]))))'
+      metricsQuery: '((increase(nv_inference_request_duration_us{<<.LabelMatchers>>,model="fasttransformer_generate"}[1m])) / (1 + (increase(nv_inference_request_success{<<.LabelMatchers>>,model="fasttransformer_generate"}[1m]))))'
 
