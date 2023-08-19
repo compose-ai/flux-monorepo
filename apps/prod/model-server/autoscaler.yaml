@@ -37,17 +37,6 @@ spec:
       target:
         type: AverageValue
         averageValue: 180000
-  - type: Pods
-    pods:
-      metric:
-        name: avg_time_queue_us
-        selector:
-          matchLabels:
-            model: fasttransformer_generate
-      # target an average queue time as low as possible, but has to be reasonable, not 0 (metric is microseconds)
-      target:
-        type: AverageValue
-        averageValue: 25000
   # We can set tolerance and other normally cluster-wide attributes for scaling here
   # Default is if the actual:desired metrics ratio is within 0.1 of 1.0 then it does nothing
   tolerance: 0.05
