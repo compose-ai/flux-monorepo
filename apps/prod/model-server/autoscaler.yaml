@@ -7,16 +7,13 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: model-server
-  minReplicas: 10
+  minReplicas: 5
   maxReplicas: 45
   behavior:
     scaleDown:
       # PHPA suggests setting this very low because linear regression should be more stable anyway
       stabilizationWindowSeconds: 0
       policies:
-      - type: Pods
-        value: 3
-        periodSeconds: 120
       - type: Percent
         value: 10
         periodSeconds: 120
@@ -26,9 +23,6 @@ spec:
       policies:
       - type: Percent
         value: 50
-        periodSeconds: 15
-      - type: Pods
-        value: 5
         periodSeconds: 15
       selectPolicy: Max
   metrics:
@@ -67,7 +61,8 @@ spec:
       linear:
         # Look 3 minutes ahead because it takes about that long to scale up
         lookAhead: 180000
-        historySize: 20
+        # Use the last 12 points (6 minutes) to calc the linear regression
+        historySize: 12
     - type: HoltWinters
       name: simple-holt-winters
       # Only calculate and store 1/10th of points
@@ -81,9 +76,9 @@ spec:
         gamma: 0.9
         # 1 day seasons, based on 30s sync period
         seasonalPeriods: 2880
-        # store 1 week of seasons
-        storedSeasons: 7
+        # store 2 weeks of seasons
+        storedSeasons: 28
         trend: additive
         seasonal: additive
-  # Don't forget to change seasonlPeriods if you change this
+  # Don't forget to change seasonlPeriods if you change this and potentially historySize
   syncPeriod: 30000
