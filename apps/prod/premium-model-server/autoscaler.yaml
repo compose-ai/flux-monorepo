@@ -1,0 +1,73 @@
+kind: PredictiveHorizontalPodAutoscaler
+apiVersion: jamiethompson.me/v1alpha1
+metadata:
+  name: model-server
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: model-server
+  minReplicas: 1
+  maxReplicas: 1
+  behavior:
+    scaleDown:
+      # PHPA suggests setting this very low because linear regression should be more stable anyway
+      stabilizationWindowSeconds: 0
+      policies:
+      - type: Percent
+        value: 10
+        periodSeconds: 120
+      selectPolicy: Min
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 15
+      selectPolicy: Max
+  metrics:
+  - type: Pods
+    pods:
+      metric:
+        name: model_server_total_latency
+        selector:
+          matchLabels:
+            model: fasttransformer_generate
+      # target an average total latency of around 150ms per request (metric is microseconds)
+      target:
+        type: AverageValue
+        averageValue: 150000
+  # We can set tolerance and other normally cluster-wide attributes for scaling here
+  # Default is if the actual:desired metrics ratio is within 0.1 of 1.0 then it does nothing
+  tolerance: 0.05
+  # Predictive part
+  # Err on the side of too many servers
+  decisionType: "maximum"
+  models:
+    - type: Linear
+      name: simple-linear
+      perSyncPeriod: 1
+      linear:
+        # Look 3 minutes ahead because it takes about that long to scale up
+        lookAhead: 180000
+        # Use the last 12 points (6 minutes) to calc the linear regression
+        historySize: 12
+    - type: HoltWinters
+      name: simple-holt-winters
+      # Only calculate and store 1/10th of points
+      perSyncPeriod: 10
+      startInterval: 24h
+      resetDuration: 15m
+      holtWinters:
+        # TODO: Tune hyperparameters
+        alpha: 0.9
+        beta: 0.9
+        gamma: 0.9
+        # 1 day seasons, based on 30s sync period
+        seasonalPeriods: 2880
+        # store 2 weeks of seasons
+        storedSeasons: 28
+        trend: additive
+        seasonal: additive
+  # Don't forget to change seasonlPeriods if you change this and potentially historySize
+  syncPeriod: 30000
