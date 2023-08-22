@@ -107,12 +107,6 @@ spec:
       securityContext:
         fsGroup: 1001
 ---
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: model-csi-gcs-sc
-provisioner: gcs.csi.ofek.dev
----
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -124,12 +118,13 @@ spec:
     requests:
       storage: 10Gi
   storageClassName: model-csi-gcs-sc
-  volumeName: "model-csi-gcs-pv"
+  # Make sure this is globally unique or you may run into issues with deploying
+  volumeName: "premium-model-csi-gcs-pv"
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: model-csi-gcs-pv
+  name: premium-model-csi-gcs-pv
   annotations:
     pv.beta.kubernetes.io/gid: "1001"
 spec:

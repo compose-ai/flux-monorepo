@@ -116,12 +116,13 @@ spec:
     requests:
       storage: 50Gi
   storageClassName: model-csi-gcs-sc
-  volumeName: "model-csi-gcs-pv-context"
+  # Make sure this is globally unique or you may run into issues with deploying
+  volumeName: "model-csi-gcs-pv-context-premium"
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: model-csi-gcs-pv-context
+  name: model-csi-gcs-pv-context-premium
   annotations:
     pv.beta.kubernetes.io/gid: "1002"
 spec:
