@@ -8,7 +8,7 @@ spec:
     kind: Deployment
     name: model-server
   minReplicas: 5
-  maxReplicas: 45
+  maxReplicas: 42
   behavior:
     scaleDown:
       # PHPA suggests setting this very low because linear regression should be more stable anyway
@@ -33,10 +33,10 @@ spec:
         selector:
           matchLabels:
             model: fasttransformer_generate
-      # target an average total latency of around 180ms per request (metric is microseconds)
+      # target an average total latency of around 200ms per request (metric is microseconds)
       target:
         type: AverageValue
-        averageValue: 180000
+        averageValue: 200000
   # We can set tolerance and other normally cluster-wide attributes for scaling here
   # Default is if the actual:desired metrics ratio is within 0.1 of 1.0 then it does nothing
   tolerance: 0.05
