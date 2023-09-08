@@ -7,8 +7,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: model-server
-  minReplicas: 5
-  maxReplicas: 42
+  minReplicas: 3
+  maxReplicas: 25
   behavior:
     scaleDown:
       # PHPA suggests setting this very low because linear regression should be more stable anyway
