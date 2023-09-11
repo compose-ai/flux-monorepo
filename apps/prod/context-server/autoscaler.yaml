@@ -7,8 +7,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: context-server
-  minReplicas: 6
-  maxReplicas: 6
+  minReplicas: 7
+  maxReplicas: 7
   behavior:
     scaleDown:
       stabilizationWindowSeconds: 300
