@@ -77,6 +77,11 @@ spec:
       # attr_email: "email"
       attr_email:
 
+    ingress:
+      # -- Ingress handler type. Defaults to `nginx` if nginx is enabled and to `clb` on gcp.
+      type: "nginx"
+      hostname: "posthog.ops.cluster.compose.ai"
+
     ## External Object Storage configuration
     ##
     # TODO
