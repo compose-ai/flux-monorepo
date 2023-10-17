@@ -129,7 +129,7 @@ spec:
       # -- Ingress handler type. Defaults to `nginx` if nginx is enabled and to `clb` on gcp.
       type: "nginx"
       hostname: "posthog.ops.cluster.compose.ai"
-      letsencrypt: true
+      secretName: "posthog-ingress-tls"
       annotations:
         cert-manager.io/cluster-issuer: cert-manager-global
 
