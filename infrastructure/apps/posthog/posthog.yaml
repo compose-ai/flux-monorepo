@@ -1,0 +1,35 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: posthog
+  namespace: posthog
+spec:
+  interval: 5m0s
+  url: https://posthog.github.io/charts-clickhouse/
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: posthog
+  namespace: posthog
+spec:
+  interval: 60m
+  chart:
+    spec:
+      chart: posthog
+      version: "*"
+      sourceRef:
+        kind: HelmRepository
+        name: posthog
+      interval: 12h
+  # https://github.com/PostHog/charts-clickhouse/blob/main/charts/posthog/values.yaml
+  values:
+    # TODO, change from another chart's requirements
+    #resources:
+      #requests:
+        #cpu: 100m
+        #memory: 64Mi
+      #limits:
+        #cpu: 1
+        #memory: 512Mi

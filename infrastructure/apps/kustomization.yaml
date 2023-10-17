@@ -9,3 +9,4 @@ resources:
   - jaeger-operator
   - jaeger
   - opentelemetry-operator
+  - posthog
