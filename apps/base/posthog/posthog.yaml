@@ -6,7 +6,7 @@ metadata:
   namespace: posthog
 spec:
   interval: 5m0s
-  url: https://posthog.github.io/charts-clickhouse/
+  url: https://compose-ai.github.io/charts-clickhouse/
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
@@ -23,7 +23,7 @@ spec:
         kind: HelmRepository
         name: posthog
       interval: 12h
-  # https://github.com/PostHog/charts-clickhouse/blob/main/charts/posthog/values.yaml
+  # https://github.com/compose-ai/charts-clickhouse/blob/main/charts/posthog/values.yaml
   values:
     # -- Cloud service being deployed on (example: `aws`, `azure`, `do`, `gcp`, `other`).
     cloud: "gcp"

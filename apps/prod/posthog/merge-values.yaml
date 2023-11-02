@@ -1,0 +1,90 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: posthog
+  namespace: posthog
+spec:
+  # https://github.com/compose-ai/charts-clickhouse/blob/main/charts/posthog/values.yaml
+  values:
+    # -- Site url specifies the canonical URL root the site can be accessed using.
+    # This is used to e.g. generate shareable links to Dashboards.
+    siteUrl: "posthog.prod.cluster.compose.ai"
+
+    web:
+      env:
+        # -- Set google oauth 2 key. Requires posthog ee license.
+        - name: SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
+          value:
+        # -- Set google oauth 2 secret. Requires posthog ee license.
+        - name: SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
+          value:
+        # -- Set google oauth 2 whitelisted domains users can log in from.
+        - name: SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_DOMAINS
+          value: "compose.ai"
+      nodeSelector:
+        matchLabels:
+          app: posthog
+    worker:
+      nodeSelector:
+        matchLabels:
+          app: posthog
+    plugins:
+      nodeSelector:
+        matchLabels:
+          app: posthog
+    pluginsAsync:
+      nodeSelector:
+        matchLabels:
+          app: posthog
+    pluginsIngestion:
+      nodeSelector:
+        matchLabels:
+          app: posthog
+    pluginsAnalyticsIngestion:
+      nodeSelector:
+        matchLabels:
+          app: posthog
+    recordingsIngestion:
+      nodeSelector:
+        matchLabels:
+          app: posthog
+    recordingsBlobIngestion:
+      nodeSelector:
+        matchLabels:
+          app: posthog
+    pluginsExports:
+      nodeSelector:
+        matchLabels:
+          app: posthog
+    pluginsJobs:
+      nodeSelector:
+        matchLabels:
+          app: posthog
+    pluginsScheduler:
+      nodeSelector:
+        matchLabels:
+          app: posthog
+    temporalPyWorker:
+      nodeSelector:
+        matchLabels:
+          app: posthog
+    _pgbouncer:
+      nodeSelector:
+        matchLabels:
+          app: posthog
+    hooks:
+      nodeSelector:
+        matchLabels:
+          app: posthog
+    clickhouse:
+      nodeSelector:
+        matchLabels:
+          app: posthog
+    kafka:
+      nodeSelector:
+        matchLabels:
+          app: posthog
+    ingress:
+      # -- Ingress handler type. Defaults to `nginx` if nginx is enabled and to `clb` on gcp.
+      type: "nginx"
+      hostname: "posthog.prod.cluster.compose.ai"
