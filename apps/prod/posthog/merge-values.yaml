@@ -80,11 +80,29 @@ spec:
       nodeSelector:
         matchLabels:
           app: posthog
+      persistence:
+        # -- Enable data persistence using PVC.
+        enabled: true
+
+        # -- Persistent Volume size
+        size: 500Gi
     kafka:
       nodeSelector:
         matchLabels:
           app: posthog
+      persistence:
+        # - Enable data persistence using PVC.
+        enabled: true
+        # -- PVC Storage Request for Kafka data volume.
+        size: 50Gi
     ingress:
       # -- Ingress handler type. Defaults to `nginx` if nginx is enabled and to `clb` on gcp.
       type: "nginx"
       hostname: "posthog.prod.cluster.compose.ai"
+    postgresql:
+      persistence:
+        # -- Enable persistence using PVC.
+        enabled: true
+        # -- PVC Storage Request for PostgreSQL volume.
+        size: 50Gi
+
