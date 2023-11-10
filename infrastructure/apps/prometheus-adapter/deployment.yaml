@@ -11,12 +11,13 @@ spec:
   affinity:
     nodeAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: cloud.google.com/gke-nodepool
-            operator: In
-            values:
-            - metrics
+        - weight: 1
+          preference:
+            matchExpressions:
+            - key: cloud.google.com/gke-nodepool
+              operator: In
+              values:
+              - metrics
   tolerations:
     - key: "metrics"
       operator: "Exists"
