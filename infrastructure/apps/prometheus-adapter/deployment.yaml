@@ -8,20 +8,6 @@ metadata:
   name: prometheus-adapter
   namespace: monitoring
 spec:
-  affinity:
-    nodeAffinity:
-      preferredDuringSchedulingIgnoredDuringExecution:
-        - weight: 1
-          preference:
-            matchExpressions:
-            - key: cloud.google.com/gke-nodepool
-              operator: In
-              values:
-              - metrics
-  tolerations:
-    - key: "metrics"
-      operator: "Exists"
-      effect: "NoSchedule"
   replicas: 2
   selector:
     matchLabels:
@@ -32,6 +18,20 @@ spec:
       maxSurge: 1
       maxUnavailable: 1
   template:
+    affinity:
+      nodeAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: cloud.google.com/gke-nodepool
+                operator: In
+                values:
+                - metrics
+    tolerations:
+      - key: "metrics"
+        operator: "Exists"
+        effect: "NoSchedule"
     metadata:
       labels:
         app.kubernetes.io/component: metrics-adapter
