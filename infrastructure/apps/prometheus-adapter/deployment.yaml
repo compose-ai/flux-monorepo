@@ -18,26 +18,26 @@ spec:
       maxSurge: 1
       maxUnavailable: 1
   template:
-    affinity:
-      nodeAffinity:
-        preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 1
-            preference:
-              matchExpressions:
-              - key: cloud.google.com/gke-nodepool
-                operator: In
-                values:
-                - metrics
-    tolerations:
-      - key: "metrics"
-        operator: "Exists"
-        effect: "NoSchedule"
     metadata:
       labels:
         app.kubernetes.io/component: metrics-adapter
         app.kubernetes.io/name: prometheus-adapter
         app.kubernetes.io/version: 0.11.0
     spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                - key: cloud.google.com/gke-nodepool
+                  operator: In
+                  values:
+                  - metrics
+      tolerations:
+        - key: "metrics"
+          operator: "Exists"
+          effect: "NoSchedule"
       automountServiceAccountToken: true
       containers:
       - args:
