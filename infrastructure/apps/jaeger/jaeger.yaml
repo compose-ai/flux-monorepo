@@ -4,6 +4,19 @@ metadata:
   name: jaeger
   namespace: jaeger
 spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: cloud.google.com/gke-nodepool
+            operator: In
+            values:
+            - metrics
+  tolerations:
+    - key: "metrics"
+      operator: "Exists"
+      effect: "NoSchedule"
   strategy: production
   #prometheus:
     #server-url: "http://prometheus-kube-prometheus-prometheus.metrics.svc.cluster.local:9090"

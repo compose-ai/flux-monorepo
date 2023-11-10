@@ -8,6 +8,19 @@ metadata:
   name: prometheus-adapter
   namespace: monitoring
 spec:
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: cloud.google.com/gke-nodepool
+            operator: In
+            values:
+            - metrics
+  tolerations:
+    - key: "metrics"
+      operator: "Exists"
+      effect: "NoSchedule"
   replicas: 2
   selector:
     matchLabels:
