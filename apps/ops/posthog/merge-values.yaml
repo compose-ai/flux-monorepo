@@ -4,7 +4,7 @@ metadata:
   name: posthog
   namespace: posthog
 spec:
-  # https://github.com/PostHog/charts-clickhouse/blob/main/charts/posthog/values.yaml
+  # https://github.com/compose-ai/charts-clickhouse/blob/main/charts/posthog/values.yaml
   values:
     # -- Cloud service being deployed on (example: `aws`, `azure`, `do`, `gcp`, `other`).
     cloud: "gcp"
