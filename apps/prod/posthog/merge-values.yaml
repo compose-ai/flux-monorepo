@@ -116,7 +116,7 @@ spec:
         # -- Enable persistence using PVC.
         enabled: true
         # -- PVC Storage Request for PostgreSQL volume.
-        size: 50Gi
+        size: 100Gi
     _pgbouncer:
       nodeSelector:
         cloud.google.com/gke-nodepool: posthog
@@ -139,7 +139,8 @@ spec:
         # - Enable data persistence using PVC.
         enabled: true
         # -- PVC Storage Request for Kafka data volume.
-        size: 50Gi
+        size: 200Gi
+      logRetentionBytes: _150_000_000_000
       tolerations:
         - key: "posthog"
           operator: "Exists"

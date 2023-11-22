@@ -35,6 +35,10 @@ spec:
     # This is used to e.g. generate shareable links to Dashboards.
     siteUrl: "posthog.ops.cluster.compose.ai"
 
+    pgbouncer:
+      hpa:
+        enabled: true
+
     events:
       hpa:
         # -- Whether to create a HorizontalPodAutoscaler for the events stack.
@@ -61,6 +65,8 @@ spec:
         enabled: true
 
     web:
+      hpa:
+        enabled: true
       env:
         # -- Set google oauth 2 key. Requires posthog ee license.
         - name: SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
