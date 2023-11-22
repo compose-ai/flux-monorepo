@@ -22,87 +22,156 @@ spec:
         - name: SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_DOMAINS
           value: "compose.ai"
       nodeSelector:
-        matchLabels:
-          app: posthog
+        cloud.google.com/gke-nodepool: posthog
+      tolerations:
+        - key: "posthog"
+          operator: "Exists"
+          effect: "NoSchedule"
     worker:
       nodeSelector:
-        matchLabels:
-          app: posthog
+        cloud.google.com/gke-nodepool: posthog
+      tolerations:
+        - key: "posthog"
+          operator: "Exists"
+          effect: "NoSchedule"
     plugins:
       nodeSelector:
-        matchLabels:
-          app: posthog
+        cloud.google.com/gke-nodepool: posthog
+      tolerations:
+        - key: "posthog"
+          operator: "Exists"
+          effect: "NoSchedule"
     pluginsAsync:
       nodeSelector:
-        matchLabels:
-          app: posthog
+        cloud.google.com/gke-nodepool: posthog
+      tolerations:
+        - key: "posthog"
+          operator: "Exists"
+          effect: "NoSchedule"
     pluginsIngestion:
       nodeSelector:
-        matchLabels:
-          app: posthog
+        cloud.google.com/gke-nodepool: posthog
+      tolerations:
+        - key: "posthog"
+          operator: "Exists"
+          effect: "NoSchedule"
     pluginsAnalyticsIngestion:
       nodeSelector:
-        matchLabels:
-          app: posthog
+        cloud.google.com/gke-nodepool: posthog
+      tolerations:
+        - key: "posthog"
+          operator: "Exists"
+          effect: "NoSchedule"
     recordingsIngestion:
       nodeSelector:
-        matchLabels:
-          app: posthog
+        cloud.google.com/gke-nodepool: posthog
+      tolerations:
+        - key: "posthog"
+          operator: "Exists"
+          effect: "NoSchedule"
     recordingsBlobIngestion:
       nodeSelector:
-        matchLabels:
-          app: posthog
+        cloud.google.com/gke-nodepool: posthog
+      tolerations:
+        - key: "posthog"
+          operator: "Exists"
+          effect: "NoSchedule"
     pluginsExports:
       nodeSelector:
-        matchLabels:
-          app: posthog
+        cloud.google.com/gke-nodepool: posthog
+      tolerations:
+        - key: "posthog"
+          operator: "Exists"
+          effect: "NoSchedule"
     pluginsJobs:
       nodeSelector:
-        matchLabels:
-          app: posthog
+        cloud.google.com/gke-nodepool: posthog
+      tolerations:
+        - key: "posthog"
+          operator: "Exists"
+          effect: "NoSchedule"
     pluginsScheduler:
       nodeSelector:
-        matchLabels:
-          app: posthog
+        cloud.google.com/gke-nodepool: posthog
+      tolerations:
+        - key: "posthog"
+          operator: "Exists"
+          effect: "NoSchedule"
     temporalPyWorker:
       nodeSelector:
-        matchLabels:
-          app: posthog
+        cloud.google.com/gke-nodepool: posthog
+      tolerations:
+        - key: "posthog"
+          operator: "Exists"
+          effect: "NoSchedule"
+    postgresql:
+      master:
+        nodeSelector:
+          cloud.google.com/gke-nodepool: posthog
+        tolerations:
+          - key: "posthog"
+            operator: "Exists"
+            effect: "NoSchedule"
+      persistence:
+        # -- Enable persistence using PVC.
+        enabled: true
+        # -- PVC Storage Request for PostgreSQL volume.
+        size: 50Gi
     _pgbouncer:
       nodeSelector:
-        matchLabels:
-          app: posthog
-    hooks:
+        cloud.google.com/gke-nodepool: posthog
+      tolerations:
+        - key: "posthog"
+          operator: "Exists"
+          effect: "NoSchedule"
+    redis:
+      master:
+        nodeSelector:
+          cloud.google.com/gke-nodepool: posthog
+        tolerations:
+          - key: "posthog"
+            operator: "Exists"
+            effect: "NoSchedule"
+    kafka:
       nodeSelector:
-        matchLabels:
-          app: posthog
+        cloud.google.com/gke-nodepool: posthog
+      persistence:
+        # - Enable data persistence using PVC.
+        enabled: true
+        # -- PVC Storage Request for Kafka data volume.
+        size: 50Gi
+      tolerations:
+        - key: "posthog"
+          operator: "Exists"
+          effect: "NoSchedule"
+    zookeeper:
+      nodeSelector:
+        cloud.google.com/gke-nodepool: posthog
+      tolerations:
+        - key: "posthog"
+          operator: "Exists"
+          effect: "NoSchedule"
     clickhouse:
       nodeSelector:
-        matchLabels:
-          app: posthog
+        cloud.google.com/gke-nodepool: posthog
       persistence:
         # -- Enable data persistence using PVC.
         enabled: true
 
         # -- Persistent Volume size
         size: 500Gi
-    kafka:
+      tolerations:
+        - key: "posthog"
+          operator: "Exists"
+          effect: "NoSchedule"
+    hooks:
       nodeSelector:
-        matchLabels:
-          app: posthog
-      persistence:
-        # - Enable data persistence using PVC.
-        enabled: true
-        # -- PVC Storage Request for Kafka data volume.
-        size: 50Gi
+        cloud.google.com/gke-nodepool: posthog
+      tolerations:
+        - key: "posthog"
+          operator: "Exists"
+          effect: "NoSchedule"
     ingress:
       # -- Ingress handler type. Defaults to `nginx` if nginx is enabled and to `clb` on gcp.
       type: "nginx"
       hostname: "posthog.prod.cluster.compose.ai"
-    postgresql:
-      persistence:
-        # -- Enable persistence using PVC.
-        enabled: true
-        # -- PVC Storage Request for PostgreSQL volume.
-        size: 50Gi
-
