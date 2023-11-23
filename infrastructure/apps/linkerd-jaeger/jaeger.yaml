@@ -17,7 +17,7 @@ metadata:
     linkerd.io/extension: jaeger
     app.kubernetes.io/name: jaeger-injector
     app.kubernetes.io/part-of: Linkerd
-    app.kubernetes.io/version: stable-2.13.5
+    app.kubernetes.io/version: stable-2.14.5
     component: jaeger-injector
   name: jaeger-injector
   namespace: linkerd-jaeger
@@ -30,7 +30,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: fd0621a767180ab05694ebab2fb3b5cbfc9960d2d51f80ba33d16612b14a3ee8
+        checksum/config: c1bbfe26bb0e5e756e0ad1c1f4dd3929217d84a7f50aa8f6dfde0db167cf913c
         linkerd.io/inject: enabled
         config.linkerd.io/proxy-await: "enabled"
         config.alpha.linkerd.io/proxy-wait-before-exit-seconds: "0"
@@ -45,11 +45,11 @@ spec:
       - args:
         - -collector-svc-addr=collector.linkerd-jaeger.svc.cluster.local:55678
         - -collector-svc-account=collector
-        - -log-level=debug
+        - -log-level=info
         - -cluster-domain=cluster.local
         - -linkerd-namespace=linkerd
         - -enable-pprof=false
-        image: cr.l5d.io/linkerd/jaeger-webhook:stable-2.13.5
+        image: cr.l5d.io/linkerd/jaeger-webhook:stable-2.14.5
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -72,6 +72,7 @@ spec:
           capabilities:
             drop:
             - ALL
+          readOnlyRootFilesystem: true
           runAsNonRoot: true
           runAsUser: 2103
           seccompProfile:
@@ -117,7 +118,7 @@ metadata:
     linkerd.io/extension: jaeger
     component: jaeger-injector
   annotations:
-    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/created-by: linkerd/helm stable-2.14.5
 spec:
   podSelector:
     matchLabels:
@@ -135,7 +136,7 @@ metadata:
     linkerd.io/extension: jaeger
     component: jaeger-injector
   annotations:
-    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/created-by: linkerd/helm stable-2.14.5
 spec:
   targetRef:
     group: policy.linkerd.io
@@ -154,7 +155,7 @@ metadata:
   labels:
     linkerd.io/extension: viz
   annotations:
-    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/created-by: linkerd/helm stable-2.14.5
 spec:
   # Ideally, this should be restricted to the actual set of IPs the kube-api
   # server uses for webhooks in a cluster. This can't easily be discovered.
@@ -170,6 +171,8 @@ apiVersion: v1
 metadata:
   name: collector
   namespace: linkerd-jaeger
+  labels:
+    linkerd.io/extension: jaeger
 ---
 ###
 ### Jaeger Injector RBAC
@@ -206,16 +209,20 @@ apiVersion: v1
 metadata:
   name: jaeger-injector
   namespace: linkerd-jaeger
+  labels:
+    linkerd.io/extension: jaeger
 ---
 kind: Secret
 apiVersion: v1
 metadata:
   name: jaeger-injector-k8s-tls
   namespace: linkerd-jaeger
+  labels:
+    linkerd.io/extension: jaeger
 type: kubernetes.io/tls
 data:
-  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURVekNDQWp1Z0F3SUJBZ0lSQVBtS0xPaVFFOWNsV2szY29SckJEQVV3RFFZSktvWklodmNOQVFFTEJRQXcKTFRFck1Da0dBMVVFQXhNaWFtRmxaMlZ5TFdsdWFtVmpkRzl5TG14cGJtdGxjbVF0YW1GbFoyVnlMbk4yWXpBZQpGdzB5TXpBNE1UQXdNVFU0TVROYUZ3MHlOREE0TURrd01UVTRNVE5hTUMweEt6QXBCZ05WQkFNVEltcGhaV2RsCmNpMXBibXBsWTNSdmNpNXNhVzVyWlhKa0xXcGhaV2RsY2k1emRtTXdnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUEKQTRJQkR3QXdnZ0VLQW9JQkFRREM4UzJDSUtnZkVoYnRMRGRtYml6ZXhxNWwrQW1mODNpZGJaTFMzak8reEp2RApHYnhoOWFEMERJZmx4VmlYQ01NUlFENkEvRDliWWJSdUtnNjdyQzdoelNraG0wamV3cnpKRmhVTnBXR21SeFltCjFXV1FjSklSbjZGNWsxcHNLOU5EWlRGbmZnR0J0Rm1tMFM1Tjl5ZHJ1LzFXMlVSWEt6a3d3Y1RVd1RLZGljSFQKUUExN0hpQ1VrVG1Bc0JIVlYxdGZSQlZpQXpwZzlPVUpGWGY2UDVLMlB1MGR4Ry90eDlvUTZ2SnA3VGJSaWMvUQpoRGRxS3JUbUM0WVJKWWRIaGt4c1ZOS1pOMDdkazJHU0ZVaWQyRGNaSlBrQ2hPRWpGczBIbHdjaG9nc09sckZlCnVpZk5wUFkwdkJEQkZBNE1USU5PTktrb1Bzd0sybU0xc3JtSjNWZU5BZ01CQUFHamJqQnNNQTRHQTFVZER3RUIKL3dRRUF3SUZvREFkQmdOVkhTVUVGakFVQmdnckJnRUZCUWNEQVFZSUt3WUJCUVVIQXdJd0RBWURWUjBUQVFILwpCQUl3QURBdEJnTlZIUkVFSmpBa2dpSnFZV1ZuWlhJdGFXNXFaV04wYjNJdWJHbHVhMlZ5WkMxcVlXVm5aWEl1CmMzWmpNQTBHQ1NxR1NJYjNEUUVCQ3dVQUE0SUJBUUF1RndkaG9rNks1ZVJmaHpTS01mMjFTOEJLdG5SbUZwQncKeEMxcEp4TUtmY2pyODNCZWNmUzNpMVhmdE9Id1JwNE5aRHBiWXA3Y0t0RnRMcjJPUm85ZkF5K0p1YnkrRHVQRwowNGR3eDd6RzM2dDU3cmpnalNLY0ZpRzdNMjZ5T1FPUC9RTjg5VzB4NFBXWEFGUFM0bmtzdXBkN1JRTnk4WVFNClpqTGxscmF0Y3lEK3RZZytSNDlkSUJZUXFvb3I5d2NHQnc3UElGQjdZaS9MNTBSak1jTGpkdFdWRWRJUXV2VzgKckl1L0RqaGp1eHFiakJpNjgrZml6OVp0VWdGakl6R3J0dHF0NlA2SUIweFI2Z0JJTzFFNGRab3p0ZlN0NnJONApPVVQ1di9VbUVlVE9nWTlHbll4QURwYmxsb1VPT1hLSjNheTJ5R2dVMnpwNXBVZlpzenhuCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0=
-  tls.key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb3dJQkFBS0NBUUVBd3ZFdGdpQ29IeElXN1N3M1ptNHMzc2F1WmZnSm4vTjRuVzJTMHQ0enZzU2J3eG04CllmV2c5QXlINWNWWWx3akRFVUErZ1B3L1cyRzBiaW9PdTZ3dTRjMHBJWnRJM3NLOHlSWVZEYVZocGtjV0p0VmwKa0hDU0VaK2hlWk5hYkN2VFEyVXhaMzRCZ2JSWnB0RXVUZmNuYTd2OVZ0bEVWeXM1TU1IRTFNRXluWW5CMDBBTgpleDRnbEpFNWdMQVIxVmRiWDBRVllnTTZZUFRsQ1JWMytqK1N0ajd0SGNSdjdjZmFFT3J5YWUwMjBZblAwSVEzCmFpcTA1Z3VHRVNXSFI0Wk1iRlRTbVRkTzNaTmhraFZJbmRnM0dTVDVBb1RoSXhiTkI1Y0hJYUlMRHBheFhyb24KemFUMk5Md1F3UlFPREV5RFRqU3BLRDdNQ3Rwak5iSzVpZDFYalFJREFRQUJBb0lCQUZoNWZWNEIxRXZGdWdJSwpmMXBOeHErVkhMSEswUk4zUE5hMlZGeS8zRnhJZnlrZEZSS2dtRndyRThLRXZxQk5xYnE2bmFPTTJIUnc4NkxNCkU4TzVjYzJwZjNGeE9MRmhVSzB6Q0hzWkJDaWpPcnFGUDRNK2xBekxsazNIUXRLMVVUelZRSWJuK1djVW8xdkMKdEhGT0t1WUtmQUJldTFXVW1IQTRnVXpPSWxxODBCb2l3VXd2VytBNGdQTzlUVmVQa3lVbzdsN0hZZ0VkNXh1OApyd21TZkVqNVZqRmtaaTc4emViOWRMN1djVmlWcUJLSytsd2hyeUw4cGphYXU2WWdlcUhkelpRZW1nR1RjMkMrCkpaRXZvcFk3dzliRjFmQmVYMGtxeEt3amhMNFh0bGJzRXY2V3lFS2grYnVhQWZDSnZ0VDRuRzhOL3MvL2NPeEgKNVAxZ3pnRUNnWUVBMnhtaFh2bFhMaVBIbERjS3VJcnR2ZFM2aHhRQ1FxR29ac2VhTjViYmU3TWg1Vk5oK29yQwpLb3BiVVpJSnVCSnBncWJXK01HYW8vbTFBaE5TMnBMNjJuUTVwQ2FzL3Q1aUNMZHh0VUFuSHdWMVU4Q2xXc1BpCmNDdUVXc2creTdwSWFzZm40RnM3YWhLTmNGUGVkRVBVQkRZb1ZXQjhMK2x2SnRERCsrY2JTMmtDZ1lFQTQ4WDkKTUdBSWJVZTJmbng1cjVlT1NwbVUwVTFuUjBVRHRsdWRDUG5CWitMWFcyektGbm4rYWZOQXdoQWRlQUhhd01SdgpUWGhDMmpaMkcvNWRtbUh6OVprbkIzV2FUWVE5c3IzWVE0QTJPY1BVVTdaS2pYcTFpVVpNSGNMd2gxWkRvbENSCnZ3WVczUVpxSmVNT1BMMDNPbU55eFMrajYxU0dGTVZqNjNLQ21vVUNnWUI0SzJtWHRyZzdSVUtNcDFmSStlSUYKY1N6Uk00YzkxbjZQeU1CcjV1RUF5ckkzbm5FcHdudFdhOFpFU2czc21LU29GU3ZwQ2Y3d0d1Qk5nQjI4WmtzUwpFQmNoVWxrbC9RRFYrUTl6c3ZrQ0NiTmRPVmM0SGlJUEZiOGxMNWxKa2lWdjg2N1pIaERMVDl1bGxVcDRpRTg3CjlCeFJIM2RkcS9IYjN6cnU2Y1hOcVFLQmdRRFRObkdHUGtjU0x3SEhZTjNtT2YrMHBaNGVTRXlSQmlwZkc2ME8KK2FxakR2THMwSURGUHZMd2hLVjBUMFZFVjFQbWxVRXc4V2ZzdWJ2a1VZZXk5VW9vWUpDVWxqVXoxSUR5RXFGTQpWc1B4NU9vcmhrcXp6eW92MVlRWHhRRU9QcXdSQSsxaTJkNnhycFVYOU9qcTRmc29wYmR6cXEyeU4zcnVIK3g4CkZIK1BrUUtCZ0VPaHpRa1R3dFlQeThFeUVyU2V6WForSGNQdkZodnYzWForbGx0VUtlaHl5a2U0WkFuYXJEMFoKQ255T1Y1VFlPZDhYV1FrMzQ3ZWRydFRqY2hMZy9SSjZIYjhueTlrQ2RyZUJ6SU54VVJGQTRPYnVObE5oTnhQQQpMRisrd1JXbnYvSHlyaCtVK2V4TWtvdU5FOEd6S3JIVk55akJNZFFPd2prZnh3b3BUYU1nCi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0t
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURVakNDQWpxZ0F3SUJBZ0lRZENSWjR0cUlFQlZNcG54WC9JcC9SVEFOQmdrcWhraUc5dzBCQVFzRkFEQXQKTVNzd0tRWURWUVFERXlKcVlXVm5aWEl0YVc1cVpXTjBiM0l1YkdsdWEyVnlaQzFxWVdWblpYSXVjM1pqTUI0WApEVEl6TVRFeU16QXdNakkwTkZvWERUSTBNVEV5TWpBd01qSTBORm93TFRFck1Da0dBMVVFQXhNaWFtRmxaMlZ5CkxXbHVhbVZqZEc5eUxteHBibXRsY21RdGFtRmxaMlZ5TG5OMll6Q0NBU0l3RFFZSktvWklodmNOQVFFQkJRQUQKZ2dFUEFEQ0NBUW9DZ2dFQkFNWmdZSzlUcGtwTUl0ZURLeGJVMy95ZE14aG9qTEEzTFJaL0pvS1pTMGZCVEt3QQpxOXpobEtiZzJvbFhJRmRhZnJpMUMzSE1nS1NMekJ4aU5IM21kZ29rU0ttcG13T1pJSUpTSTd1a0NJQmt2aDY0CjFVY3VLZkhtZHBjeDVQRDFVRWlGLzM1SGhpY2I1aEZPTmUzQ1FiempzYzJFMWF0NmdRVUk5WjhyL1pnZkl4NzIKeE5qL0lySm1VbC9MWUY1QXJOekNZY2hkK2dZdDNaSkw3ZDNvZnVpMXdIakY2aFg3S2NBWWN0QmNFZHRsV0pxdApoQUhPdm9VeFZDL1FsdVljVkt3ZmVscmlpdGkxdE90UEh1c2xTeUN2Z0w5WVZTVnloT3NPS2ZIVGJLRitQTytOCmhwQWtMaGlPUU1Ic2Njbm9HaHRnUTl1RUNIeWRndGFkMmg5OEJMVUNBd0VBQWFOdU1Hd3dEZ1lEVlIwUEFRSC8KQkFRREFnV2dNQjBHQTFVZEpRUVdNQlFHQ0NzR0FRVUZCd01CQmdnckJnRUZCUWNEQWpBTUJnTlZIUk1CQWY4RQpBakFBTUMwR0ExVWRFUVFtTUNTQ0ltcGhaV2RsY2kxcGJtcGxZM1J2Y2k1c2FXNXJaWEprTFdwaFpXZGxjaTV6CmRtTXdEUVlKS29aSWh2Y05BUUVMQlFBRGdnRUJBR1l1aEd1MlAwbzBYRFV5ZjVYejBOcWFQcG9kbWJ5bUJZUTkKY0U3TzA4MGVpTjg1MlptMHhyQloxSDVIYTJBUkFLS1hObDROSkJUbnVWRDlwQWhmd0lKakJWRWRKZkxNdzg5VwpxMFJUdUVZM1ZUcXl4b1dlbHI5bHZreGtGSEtKK1AxTitZM0ExT3FsTmlIUjVRWTlrM3liYVZ0bmFWaDh4OW9CCnQyL1JOYTJvek5yOWxWWEZad25hSlFoTm10cHUyK3dLOHg4VzlhZUNXZ0t2ZkdBV1V3VEJoL2N5QW85TEVXVk8KZlFvY2pKdk0ycmt4TmNZajg0Rmh3V2NMY3F1VFB5dTdYL2MxbTcvYVhHdzczVmJxSFFzWWtUN3dYeFl3czdPdwp2SEFYSURoWWRUVEZHM0EvOWtTQUNQOHNreVVJZjBGcXMzeUJ4blBSWThHdWp6bVNZa2s9Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0=
+  tls.key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVBeG1CZ3IxT21Ta3dpMTRNckZ0VGYvSjB6R0dpTXNEY3RGbjhtZ3BsTFI4Rk1yQUNyCjNPR1VwdURhaVZjZ1YxcCt1TFVMY2N5QXBJdk1IR0kwZmVaMkNpUklxYW1iQTVrZ2dsSWp1NlFJZ0dTK0hyalYKUnk0cDhlWjJsekhrOFBWUVNJWC9ma2VHSnh2bUVVNDE3Y0pCdk9PeHpZVFZxM3FCQlFqMW55djltQjhqSHZiRQoyUDhpc21aU1g4dGdYa0NzM01KaHlGMzZCaTNka2t2dDNlaCs2TFhBZU1YcUZmc3B3Qmh5MEZ3UjIyVlltcTJFCkFjNitoVEZVTDlDVzVoeFVyQjk2V3VLSzJMVzA2MDhlNnlWTElLK0F2MWhWSlhLRTZ3NHA4ZE5zb1g0ODc0MkcKa0NRdUdJNUF3ZXh4eWVnYUcyQkQyNFFJZkoyQzFwM2FIM3dFdFFJREFRQUJBb0lCQUJwczJEUkN0bElMVmxEUwovamhxWHZQdGxOTFppblFteFhETHV6dUdaQXJJNndlMmh5NURObVFNYTlBRHRTRXR3dGVqOWtSUWM0cDN2TmJECkZpNzNOaDRmdXpZdWk2R3RFakdKODR5WlN6Q2ZPdHdvenZCT2EvUDNPVERteXBKMmV4MU9ERHlzRm1pN1JLaGwKZkxXUlBPU0dpRGJTVFF3c28yY2lUR1hKbkZ4WS9RQ3lrMjcvMTh6UnF0QmduZ25pajFqMmlvTGd1Z3IzNUpMMApKc2J2ZWFURXNBTUhjSGh5NWU0M0paU1NkSThlOU5BUWFKL0RoZzBsK05yUW9lUHZmaExyMWVUcm5na2ZTVHZ4CkZEUEdEdS82NUc4eXVVSjdCdSt0amJrUUJzQXVoQVZCU3M5dE1iYlBGU21pZ3Z0YS9tbWJRZ09ZS1lIbWZJdHQKWHNuM0Via0NnWUVBeDdtRHpkaEY0RlU3Y1dlNTB0QzdPd2UzVGtueDgxQjk2MWRQWmN6SlNjWU1VTC9ITjBvTgpTU25nd1ZHWFJUenB6NjIzTVhDS3A5MkFvNG9Cb3JwblFHZG4zTklqOXovalhhSGoxRmcyRCtBTHRsS2hZVm5OCjFpK3dBZ0RjV2R5OTJ5ZVlRR3Y1SHdHUGM3YmE3c0lnTmRiMm9Eck5mcDd5NnlJZ0c2M0pxY2NDZ1lFQS9rV2QKaWluNWc2M0VGRG55aEFsOGZuU2c4Q1ZiaE44SlIvTVA4N2Fld0M3MzRwQjhLWElLTVgwa28zeUtBQi92QS9DZgpDSnRaWWgyaG5naDRUendsb0FQcDJtT1RZaUo5TzFXTTFYeWo5dndWdTNkNDFJOHJIeVBkWWNBZVVJVG5xNkJGCitPRmVHN0w1L2h4aEZGMW9la1duYURFb29zb2kvQTRNdU9SYnZhTUNnWUVBaVdBckxxMHg4d250SnlYbmhRQVoKcUpLNEhOdHoxcDVvM2pWaDRXMm9qbHZ4SUtHb3ozamFCcGNOaHlzdDEydjhqdUszL1FPaCs3QzV5TU1tT04zcQpJeng5RGtCa2lLNmpIMFk1UlZlZlorLzlYbDBicjdCcmlvV21sTm91dG9qRTlqY1gzRWZvUk5GMzhHbTMwVDRwCmxaN1VhSVhKenV4WnZpM3MwOTBIdHdVQ2dZRUErekQ4dEN4SlVYdU5WRW4ydWRmQlJBK2xtZmZkMUlLZDRaVk8KY2Y0OEVER1dNeDEzZTE0c2tiMUdQN2ZkZ01nTFVJSWFLZCtHU3JacEhmelNGYnlla3RpcTRsTXltMlRsQUlQQQpVSHNFWkErZXpJYjNPRTJEVlEwU08rb1dTSWN6Y3NvdnRmRzJEWGtmSEprZWtvYkFtdUpLd2xTbUIwUFhrZGV6Clc4aEVsUzhDZ1lCQ3NwNlpHcUQ4ZHM5QVRNSTQrb0dGdFVXWFNyOVB5eW4zOE1Pa0dvejAxYlNBNm5yQ2srTWUKMzZsc2tUQTJCZ1ErNFoxL1ZxNlRCUzQ1WkdZNmxzU2xBa0E4MG1vemFueG1valFHeGd0dUVzWGluaFAvQVlGUwpEQmhpMTI5WU9xSHFYQ2k2a0FhTUtsZisxTXUyM2dzclY1cWlueUZQR2tKOEJLOGhManZXbHc9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQ==
 ---
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
@@ -230,7 +237,7 @@ webhooks:
       name: jaeger-injector
       namespace: linkerd-jaeger
       path: "/"
-    caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURVekNDQWp1Z0F3SUJBZ0lSQVBtS0xPaVFFOWNsV2szY29SckJEQVV3RFFZSktvWklodmNOQVFFTEJRQXcKTFRFck1Da0dBMVVFQXhNaWFtRmxaMlZ5TFdsdWFtVmpkRzl5TG14cGJtdGxjbVF0YW1GbFoyVnlMbk4yWXpBZQpGdzB5TXpBNE1UQXdNVFU0TVROYUZ3MHlOREE0TURrd01UVTRNVE5hTUMweEt6QXBCZ05WQkFNVEltcGhaV2RsCmNpMXBibXBsWTNSdmNpNXNhVzVyWlhKa0xXcGhaV2RsY2k1emRtTXdnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUEKQTRJQkR3QXdnZ0VLQW9JQkFRREM4UzJDSUtnZkVoYnRMRGRtYml6ZXhxNWwrQW1mODNpZGJaTFMzak8reEp2RApHYnhoOWFEMERJZmx4VmlYQ01NUlFENkEvRDliWWJSdUtnNjdyQzdoelNraG0wamV3cnpKRmhVTnBXR21SeFltCjFXV1FjSklSbjZGNWsxcHNLOU5EWlRGbmZnR0J0Rm1tMFM1Tjl5ZHJ1LzFXMlVSWEt6a3d3Y1RVd1RLZGljSFQKUUExN0hpQ1VrVG1Bc0JIVlYxdGZSQlZpQXpwZzlPVUpGWGY2UDVLMlB1MGR4Ry90eDlvUTZ2SnA3VGJSaWMvUQpoRGRxS3JUbUM0WVJKWWRIaGt4c1ZOS1pOMDdkazJHU0ZVaWQyRGNaSlBrQ2hPRWpGczBIbHdjaG9nc09sckZlCnVpZk5wUFkwdkJEQkZBNE1USU5PTktrb1Bzd0sybU0xc3JtSjNWZU5BZ01CQUFHamJqQnNNQTRHQTFVZER3RUIKL3dRRUF3SUZvREFkQmdOVkhTVUVGakFVQmdnckJnRUZCUWNEQVFZSUt3WUJCUVVIQXdJd0RBWURWUjBUQVFILwpCQUl3QURBdEJnTlZIUkVFSmpBa2dpSnFZV1ZuWlhJdGFXNXFaV04wYjNJdWJHbHVhMlZ5WkMxcVlXVm5aWEl1CmMzWmpNQTBHQ1NxR1NJYjNEUUVCQ3dVQUE0SUJBUUF1RndkaG9rNks1ZVJmaHpTS01mMjFTOEJLdG5SbUZwQncKeEMxcEp4TUtmY2pyODNCZWNmUzNpMVhmdE9Id1JwNE5aRHBiWXA3Y0t0RnRMcjJPUm85ZkF5K0p1YnkrRHVQRwowNGR3eDd6RzM2dDU3cmpnalNLY0ZpRzdNMjZ5T1FPUC9RTjg5VzB4NFBXWEFGUFM0bmtzdXBkN1JRTnk4WVFNClpqTGxscmF0Y3lEK3RZZytSNDlkSUJZUXFvb3I5d2NHQnc3UElGQjdZaS9MNTBSak1jTGpkdFdWRWRJUXV2VzgKckl1L0RqaGp1eHFiakJpNjgrZml6OVp0VWdGakl6R3J0dHF0NlA2SUIweFI2Z0JJTzFFNGRab3p0ZlN0NnJONApPVVQ1di9VbUVlVE9nWTlHbll4QURwYmxsb1VPT1hLSjNheTJ5R2dVMnpwNXBVZlpzenhuCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0=
+    caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURVakNDQWpxZ0F3SUJBZ0lRZENSWjR0cUlFQlZNcG54WC9JcC9SVEFOQmdrcWhraUc5dzBCQVFzRkFEQXQKTVNzd0tRWURWUVFERXlKcVlXVm5aWEl0YVc1cVpXTjBiM0l1YkdsdWEyVnlaQzFxWVdWblpYSXVjM1pqTUI0WApEVEl6TVRFeU16QXdNakkwTkZvWERUSTBNVEV5TWpBd01qSTBORm93TFRFck1Da0dBMVVFQXhNaWFtRmxaMlZ5CkxXbHVhbVZqZEc5eUxteHBibXRsY21RdGFtRmxaMlZ5TG5OMll6Q0NBU0l3RFFZSktvWklodmNOQVFFQkJRQUQKZ2dFUEFEQ0NBUW9DZ2dFQkFNWmdZSzlUcGtwTUl0ZURLeGJVMy95ZE14aG9qTEEzTFJaL0pvS1pTMGZCVEt3QQpxOXpobEtiZzJvbFhJRmRhZnJpMUMzSE1nS1NMekJ4aU5IM21kZ29rU0ttcG13T1pJSUpTSTd1a0NJQmt2aDY0CjFVY3VLZkhtZHBjeDVQRDFVRWlGLzM1SGhpY2I1aEZPTmUzQ1FiempzYzJFMWF0NmdRVUk5WjhyL1pnZkl4NzIKeE5qL0lySm1VbC9MWUY1QXJOekNZY2hkK2dZdDNaSkw3ZDNvZnVpMXdIakY2aFg3S2NBWWN0QmNFZHRsV0pxdApoQUhPdm9VeFZDL1FsdVljVkt3ZmVscmlpdGkxdE90UEh1c2xTeUN2Z0w5WVZTVnloT3NPS2ZIVGJLRitQTytOCmhwQWtMaGlPUU1Ic2Njbm9HaHRnUTl1RUNIeWRndGFkMmg5OEJMVUNBd0VBQWFOdU1Hd3dEZ1lEVlIwUEFRSC8KQkFRREFnV2dNQjBHQTFVZEpRUVdNQlFHQ0NzR0FRVUZCd01CQmdnckJnRUZCUWNEQWpBTUJnTlZIUk1CQWY4RQpBakFBTUMwR0ExVWRFUVFtTUNTQ0ltcGhaV2RsY2kxcGJtcGxZM1J2Y2k1c2FXNXJaWEprTFdwaFpXZGxjaTV6CmRtTXdEUVlKS29aSWh2Y05BUUVMQlFBRGdnRUJBR1l1aEd1MlAwbzBYRFV5ZjVYejBOcWFQcG9kbWJ5bUJZUTkKY0U3TzA4MGVpTjg1MlptMHhyQloxSDVIYTJBUkFLS1hObDROSkJUbnVWRDlwQWhmd0lKakJWRWRKZkxNdzg5VwpxMFJUdUVZM1ZUcXl4b1dlbHI5bHZreGtGSEtKK1AxTitZM0ExT3FsTmlIUjVRWTlrM3liYVZ0bmFWaDh4OW9CCnQyL1JOYTJvek5yOWxWWEZad25hSlFoTm10cHUyK3dLOHg4VzlhZUNXZ0t2ZkdBV1V3VEJoL2N5QW85TEVXVk8KZlFvY2pKdk0ycmt4TmNZajg0Rmh3V2NMY3F1VFB5dTdYL2MxbTcvYVhHdzczVmJxSFFzWWtUN3dYeFl3czdPdwp2SEFYSURoWWRUVEZHM0EvOWtTQUNQOHNreVVJZjBGcXMzeUJ4blBSWThHdWp6bVNZa2s9Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0=
   failurePolicy: Ignore
   admissionReviewVersions: ["v1", "v1beta1"]
   reinvocationPolicy: IfNeeded
@@ -240,6 +247,17 @@ webhooks:
     apiVersions: ["v1"]
     resources: ["pods"]
   sideEffects: None
+---
+###
+### jaeger RBAC
+###
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: jaeger
+  namespace: linkerd-jaeger
+  labels:
+    linkerd.io/extension: jaeger
 ---
 ###
 ### Tracing Collector Service
@@ -393,6 +411,7 @@ spec:
           capabilities:
             drop:
             - ALL
+          readOnlyRootFilesystem: true
           runAsNonRoot: true
           runAsUser: 2103
           seccompProfile:
@@ -412,6 +431,91 @@ spec:
           name: collector-config
         name: collector-config-val
 ---
+###
+### Tracing Jaeger Service
+###
+apiVersion: v1
+kind: Service
+metadata:
+  name: jaeger
+  namespace: linkerd-jaeger
+  labels:
+    linkerd.io/extension: jaeger
+    component: jaeger
+spec:
+  type: ClusterIP
+  selector:
+    component: jaeger
+  ports:
+    - name: collection
+      port: 14268
+    - name: grpc
+      port: 14250
+    - name: ui
+      port: 16686
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    linkerd.io/extension: jaeger
+    app.kubernetes.io/name: jaeger
+    app.kubernetes.io/part-of: Linkerd
+    component: jaeger
+  name: jaeger
+  namespace: linkerd-jaeger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: jaeger
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: enabled
+        config.linkerd.io/proxy-await: "enabled"
+        prometheus.io/path: /metrics
+        prometheus.io/port: "14269"
+        prometheus.io/scrape: "true"
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+      labels:
+        linkerd.io/extension: jaeger
+        component: jaeger
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      containers:
+      - args:
+        - --query.base-path=/jaeger
+        image: jaegertracing/all-in-one:1.31
+        imagePullPolicy: Always
+        name: jaeger
+        ports:
+        - containerPort: 14269
+          name: admin
+        - containerPort: 14268
+          name: collection
+        - containerPort: 14250
+          name: grpc
+        - containerPort: 16686
+          name: ui
+        resources:
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 2103
+          seccompProfile:
+            type: RuntimeDefault
+      dnsPolicy: ClusterFirst
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccountName: jaeger
+---
 apiVersion: policy.linkerd.io/v1beta1
 kind: Server
 metadata:
@@ -421,7 +525,7 @@ metadata:
     linkerd.io/extension: jaeger
     component: collector
   annotations:
-    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/created-by: linkerd/helm stable-2.14.5
 spec:
   podSelector:
     matchLabels:
@@ -438,7 +542,7 @@ metadata:
     linkerd.io/extension: jaeger
     component: collector
   annotations:
-    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/created-by: linkerd/helm stable-2.14.5
 spec:
   podSelector:
     matchLabels:
@@ -455,7 +559,7 @@ metadata:
     linkerd.io/extension: jaeger
     component: collector
   annotations:
-    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/created-by: linkerd/helm stable-2.14.5
 spec:
   podSelector:
     matchLabels:
@@ -472,7 +576,7 @@ metadata:
     linkerd.io/extension: jaeger
     component: collector
   annotations:
-    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/created-by: linkerd/helm stable-2.14.5
 spec:
   podSelector:
     matchLabels:
@@ -488,7 +592,7 @@ metadata:
     linkerd.io/extension: jaeger
     component: collector
   annotations:
-    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/created-by: linkerd/helm stable-2.14.5
 spec:
   podSelector:
     matchLabels:
@@ -504,7 +608,7 @@ metadata:
     linkerd.io/extension: jaeger
     component: collector
   annotations:
-    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/created-by: linkerd/helm stable-2.14.5
 spec:
   podSelector:
     matchLabels:
@@ -520,7 +624,7 @@ metadata:
     linkerd.io/extension: jaeger
     component: collector
   annotations:
-    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/created-by: linkerd/helm stable-2.14.5
 spec:
   podSelector:
     matchLabels:
@@ -537,7 +641,7 @@ metadata:
     linkerd.io/extension: jaeger
     component: collector
   annotations:
-    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/created-by: linkerd/helm stable-2.14.5
 spec:
   targetRef:
     group: policy.linkerd.io
@@ -555,7 +659,7 @@ metadata:
     linkerd.io/extension: jaeger
     component: collector
   annotations:
-    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/created-by: linkerd/helm stable-2.14.5
 spec:
   targetRef:
     group: policy.linkerd.io
@@ -573,7 +677,7 @@ metadata:
     linkerd.io/extension: jaeger
     component: collector
   annotations:
-    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/created-by: linkerd/helm stable-2.14.5
 spec:
   targetRef:
     group: policy.linkerd.io
@@ -591,7 +695,7 @@ metadata:
     linkerd.io/extension: jaeger
     component: collector
   annotations:
-    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/created-by: linkerd/helm stable-2.14.5
 spec:
   targetRef:
     group: policy.linkerd.io
@@ -609,7 +713,7 @@ metadata:
     linkerd.io/extension: jaeger
     component: collector
   annotations:
-    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/created-by: linkerd/helm stable-2.14.5
 spec:
   targetRef:
     group: policy.linkerd.io
@@ -627,7 +731,7 @@ metadata:
     linkerd.io/extension: jaeger
     component: collector
   annotations:
-    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/created-by: linkerd/helm stable-2.14.5
 spec:
   targetRef:
     group: policy.linkerd.io
@@ -645,7 +749,7 @@ metadata:
     linkerd.io/extension: jaeger
     component: jaeger
   annotations:
-    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/created-by: linkerd/helm stable-2.14.5
 spec:
   podSelector:
     matchLabels:
@@ -662,7 +766,7 @@ metadata:
     linkerd.io/extension: jaeger
     component: jaeger
   annotations:
-    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/created-by: linkerd/helm stable-2.14.5
 spec:
   targetRef:
     group: policy.linkerd.io
@@ -682,7 +786,7 @@ metadata:
     linkerd.io/extension: jaeger
     component: jaeger
   annotations:
-    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/created-by: linkerd/helm stable-2.14.5
 spec:
   podSelector:
     matchLabels:
@@ -699,7 +803,7 @@ metadata:
     linkerd.io/extension: jaeger
     component: jaeger
   annotations:
-    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/created-by: linkerd/helm stable-2.14.5
 spec:
   targetRef:
     group: policy.linkerd.io
@@ -720,7 +824,7 @@ metadata:
     linkerd.io/extension: jaeger
     component: jaeger
   annotations:
-    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/created-by: linkerd/helm stable-2.14.5
 spec:
   podSelector:
     matchLabels:
@@ -737,7 +841,7 @@ metadata:
     linkerd.io/extension: jaeger
     component: jaeger
   annotations:
-    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/created-by: linkerd/helm stable-2.14.5
 spec:
   targetRef:
     group: policy.linkerd.io
