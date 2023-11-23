@@ -5,7 +5,6 @@ resources:
   - ../base/loki
   - ../base/flux
   - ../base/nvidia-dcgm
-  - ../base/posthog
   - context-server
   - premium-context-server
   - model-server
