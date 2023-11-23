@@ -4,7 +4,7 @@ kind: CustomResourceDefinition
 metadata:
   name: authorizationpolicies.policy.linkerd.io
   annotations:
-    linkerd.io/created-by: linkerd/cli stable-2.14.1
+    linkerd.io/created-by: linkerd/cli stable-2.14.5
   labels:
     helm.sh/chart: linkerd-crds-1.8.0
     linkerd.io/control-plane-ns: linkerd
@@ -103,7 +103,7 @@ kind: CustomResourceDefinition
 metadata:
   name: httproutes.policy.linkerd.io
   annotations:
-    linkerd.io/created-by: linkerd/cli stable-2.14.1
+    linkerd.io/created-by: linkerd/cli stable-2.14.5
   labels:
     helm.sh/chart: linkerd-crds-1.8.0
     linkerd.io/control-plane-ns: linkerd
@@ -5319,7 +5319,7 @@ kind: CustomResourceDefinition
 metadata:
   name: meshtlsauthentications.policy.linkerd.io
   annotations:
-    linkerd.io/created-by: linkerd/cli stable-2.14.1
+    linkerd.io/created-by: linkerd/cli stable-2.14.5
   labels:
     helm.sh/chart: linkerd-crds-1.8.0
     linkerd.io/control-plane-ns: linkerd
@@ -5407,7 +5407,7 @@ kind: CustomResourceDefinition
 metadata:
   name: networkauthentications.policy.linkerd.io
   annotations:
-    linkerd.io/created-by: linkerd/cli stable-2.14.1
+    linkerd.io/created-by: linkerd/cli stable-2.14.5
   labels:
     helm.sh/chart: linkerd-crds-1.8.0
     linkerd.io/control-plane-ns: linkerd
@@ -5460,7 +5460,7 @@ kind: CustomResourceDefinition
 metadata:
   name: serverauthorizations.policy.linkerd.io
   annotations:
-    linkerd.io/created-by: linkerd/cli stable-2.14.1
+    linkerd.io/created-by: linkerd/cli stable-2.14.5
   labels:
     helm.sh/chart: linkerd-crds-1.8.0
     linkerd.io/control-plane-ns: linkerd
@@ -5726,7 +5726,7 @@ kind: CustomResourceDefinition
 metadata:
   name: servers.policy.linkerd.io
   annotations:
-    linkerd.io/created-by: linkerd/cli stable-2.14.1
+    linkerd.io/created-by: linkerd/cli stable-2.14.5
   labels:
     helm.sh/chart: linkerd-crds-1.8.0
     linkerd.io/control-plane-ns: linkerd
@@ -5861,7 +5861,7 @@ kind: CustomResourceDefinition
 metadata:
   name: serviceprofiles.linkerd.io
   annotations:
-    linkerd.io/created-by: linkerd/cli stable-2.14.1
+    linkerd.io/created-by: linkerd/cli stable-2.14.5
   labels:
     helm.sh/chart: linkerd-crds-1.8.0
     linkerd.io/control-plane-ns: linkerd
@@ -6139,7 +6139,7 @@ metadata:
     api-approved.kubernetes.io: https://github.com/kubernetes-sigs/gateway-api/pull/1923
     gateway.networking.k8s.io/bundle-version: v0.7.1-dev
     gateway.networking.k8s.io/channel: experimental
-    linkerd.io/created-by: linkerd/cli stable-2.14.1
+    linkerd.io/created-by: linkerd/cli stable-2.14.5
   labels:
     helm.sh/chart: linkerd-crds-1.8.0
     linkerd.io/control-plane-ns: linkerd
