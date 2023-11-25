@@ -6,6 +6,7 @@ resources:
   - ../base/flux
   - ../base/nvidia-dcgm
   - ../base/posthog
+  - posthog
   - context-server
   - premium-context-server
   - model-server
