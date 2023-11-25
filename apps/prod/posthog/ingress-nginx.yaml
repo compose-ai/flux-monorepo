@@ -426,8 +426,6 @@ spec:
         app.kubernetes.io/name: posthog-ingress-nginx
       annotations:
         config.linkerd.io/trace-collector: collector.linkerd-jaeger.svc.cluster.local:55678
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "10254"
     spec:
       tolerations:
       - key: "nginx"
@@ -694,3 +692,28 @@ webhooks:
     resources:
     - ingresses
   sideEffects: None
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: posthog-ingress-nginx-podmonitor
+  namespace: posthog-ingress-nginx
+  labels:
+    app.kubernetes.io/part-of: compose
+spec:
+  podMetricsEndpoints:
+    - path: /metrics
+      targetPort: 10254
+  namespaceSelector:
+    matchNames:
+      - posthog-ingress-nginx
+  selector:
+    matchExpressions:
+      - key: app.kubernetes.io/name
+        operator: In
+        values:
+          - posthog-ingress-nginx
+      - key: compose.ai/ignore-monitoring
+        operator: DoesNotExist
+        values:
+          - "ignore"
