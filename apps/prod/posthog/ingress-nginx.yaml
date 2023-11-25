@@ -366,6 +366,9 @@ spec:
     port: 443
     protocol: TCP
     targetPort: https
+  - name: prometheus
+    port: 10254
+    targetPort: prometheus
   selector:
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: posthog-ingress-nginx
@@ -424,8 +427,7 @@ spec:
       annotations:
         config.linkerd.io/trace-collector: collector.linkerd-jaeger.svc.cluster.local:55678
         prometheus.io/scrape: "true"
-        prometheus.io/port: "9113"
-        prometheus.io/scheme: http
+        prometheus.io/port: "10254"
     spec:
       tolerations:
       - key: "nginx"
@@ -466,7 +468,6 @@ spec:
       containers:
       - args:
         - /nginx-ingress-controller
-        - --enable-prometheus-metrics
         - --publish-service=$(POD_NAMESPACE)/posthog-ingress-nginx-controller
         - --election-id=posthog-ingress-nginx-leader
         - --controller-class=k8s.io/posthog-ingress-nginx
@@ -514,7 +515,7 @@ spec:
         - containerPort: 8443
           name: webhook
           protocol: TCP
-        - containerPort: 9113
+        - containerPort: 10254
           name: prometheus
         readinessProbe:
           failureThreshold: 3
