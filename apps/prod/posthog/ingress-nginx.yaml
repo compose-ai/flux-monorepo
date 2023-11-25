@@ -423,6 +423,9 @@ spec:
         app.kubernetes.io/name: posthog-ingress-nginx
       annotations:
         config.linkerd.io/trace-collector: collector.linkerd-jaeger.svc.cluster.local:55678
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9113"
+        prometheus.io/scheme: http
     spec:
       tolerations:
       - key: "nginx"
@@ -510,6 +513,8 @@ spec:
         - containerPort: 8443
           name: webhook
           protocol: TCP
+        - containerPort: 9113
+          name: prometheus
         readinessProbe:
           failureThreshold: 3
           httpGet:
