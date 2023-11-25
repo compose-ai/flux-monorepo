@@ -158,7 +158,7 @@ spec:
     # -- Specify the target Redis instance to monitor.
     redisAddress: redis://posthog-posthog-redis-master:6379
     env:
-      - key: REDIS_EXPORTER_INCL_SYSTEM_METRICS
+      - name: REDIS_EXPORTER_INCL_SYSTEM_METRICS
         value: "true"
 ---
 apiVersion: monitoring.coreos.com/v1
