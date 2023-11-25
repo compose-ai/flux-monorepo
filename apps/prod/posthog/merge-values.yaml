@@ -174,5 +174,5 @@ spec:
           effect: "NoSchedule"
     ingress:
       # -- Ingress handler type. Defaults to `nginx` if nginx is enabled and to `clb` on gcp.
-      type: "nginx"
+      type: "posthog-nginx"
       hostname: "posthog.prod.cluster.compose.ai"
