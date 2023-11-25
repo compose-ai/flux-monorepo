@@ -407,6 +407,7 @@ metadata:
   name: posthog-ingress-nginx-controller
   namespace: posthog-ingress-nginx
 spec:
+  replicas: 2
   minReadySeconds: 0
   revisionHistoryLimit: 10
   selector:
