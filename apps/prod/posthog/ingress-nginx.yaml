@@ -465,7 +465,7 @@ spec:
         - --publish-service=$(POD_NAMESPACE)/posthog-ingress-nginx-controller
         - --election-id=posthog-ingress-nginx-leader
         - --controller-class=k8s.io/posthog-ingress-nginx
-        - --ingress-class=nginx
+        - --ingress-class=posthog-nginx
         - --configmap=$(POD_NAMESPACE)/posthog-ingress-nginx-controller
         - --validating-webhook=:8443
         - --validating-webhook-certificate=/usr/local/certificates/cert
@@ -650,7 +650,7 @@ metadata:
     app.kubernetes.io/name: posthog-ingress-nginx
     app.kubernetes.io/part-of: posthog-ingress-nginx
     app.kubernetes.io/version: 1.6.4
-  name: nginx
+  name: posthog-nginx
 spec:
   controller: k8s.io/posthog-ingress-nginx
 ---
