@@ -466,6 +466,7 @@ spec:
       containers:
       - args:
         - /nginx-ingress-controller
+        - --enable-prometheus-metrics
         - --publish-service=$(POD_NAMESPACE)/posthog-ingress-nginx-controller
         - --election-id=posthog-ingress-nginx-leader
         - --controller-class=k8s.io/posthog-ingress-nginx
