@@ -35,8 +35,10 @@ spec:
     # This is used to e.g. generate shareable links to Dashboards.
     siteUrl: "posthog.ops.cluster.compose.ai"
 
-    pgbouncer:
+    _pgbouncer:
       hpa:
+        enabled: true
+      exporter:
         enabled: true
 
     events:
@@ -140,7 +142,6 @@ spec:
         cert-manager.io/cluster-issuer: cert-manager-global
 
     postgresql:
-      # TODO
       persistence:
         # -- Enable persistence using PVC.
         enabled: true
@@ -148,7 +149,6 @@ spec:
         size: 10Gi
 
     kafka:
-      # TODO
       persistence:
         # - Enable data persistence using PVC.
         enabled: true
@@ -156,7 +156,6 @@ spec:
         size: 20Gi
 
     clickhouse:
-      # TODO
       persistence:
         # -- Enable data persistence using PVC.
         enabled: true
@@ -178,12 +177,19 @@ spec:
         size: 20Gi
 
       ## -- ClickHouse pod(s) annotation.
-      # TODO
       podAnnotations:
         # Uncomment those lines if you want Prometheus server to scrape ClickHouse pods metrics.
-        # prometheus.io/scrape: "true"
-        # prometheus.io/path: /metrics
-        # prometheus.io/port: "9363"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /metrics
+        prometheus.io/port: "9363"
+      settings:
+        # Uncomment those lines if you want to enable the built-in Prometheus HTTP endpoint in ClickHouse.
+        prometheus/endpoint: /metrics
+        prometheus/port: 9363
+        prometheus/metrics: true
+        prometheus/events: true
+        prometheus/asynchronous_metrics: true
+
 
       backup:
         # https://posthog.com/docs/self-host/runbook/clickhouse/backup
@@ -206,5 +212,18 @@ spec:
       region:
       # -- Name of an existing Kubernetes secret object containing the `access_key_id` and `secret_access_key`. The secret has to contain the keys `root-user` and `root-password`).
       existingSecret:
+
+    zookeeper:
+      metrics:
+        enabled: true
+
+    prometheus-kafka-exporter:
+      enabled: true
+
+    prometheus-postgres-exporter:
+      enabled: true
+
+    prometheus-redis-exporter:
+      enabled: true
     
 # TODO Add all prometheus alerts and scraping for prometheus + loki
