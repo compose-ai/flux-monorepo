@@ -193,7 +193,7 @@ spec:
   chart:
     spec:
       chart: posthog
-      version: "30.33.1"
+      version: "30.33.2"
       sourceRef:
         kind: HelmRepository
         name: posthog
