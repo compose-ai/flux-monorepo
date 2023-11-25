@@ -42,15 +42,34 @@ spec:
         operator: "Exists"
         effect: "NoSchedule"
 
-    # -- Map of annotations to add to the pods.
-    annotations:
-      prometheus.io/scrape: "true"
-      prometheus.io/path: /metrics
-      prometheus.io/port: "9308"
-
     # -- Specify the target Kafka brokers to monitor.
     kafkaServer:
       - posthog-posthog-kafka:9092
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: kafka-podmonitor
+  namespace: posthog
+  labels:
+    app.kubernetes.io/part-of: compose
+spec:
+  podMetricsEndpoints:
+    - path: /metrics
+      targetPort: 9308
+  namespaceSelector:
+    matchNames:
+      - posthog
+  selector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - prometheus-kafka-exporter
+      - key: compose.ai/ignore-monitoring
+        operator: DoesNotExist
+        values:
+          - "ignore"
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
@@ -77,12 +96,6 @@ spec:
         operator: "Exists"
         effect: "NoSchedule"
 
-    # -- Map of annotations to add to the pods.
-    annotations:
-      prometheus.io/scrape: "true"
-      prometheus.io/path: /metrics
-      prometheus.io/port: "9187"
-
     # -- Configuration options.
     config:
       datasource:
@@ -91,6 +104,31 @@ spec:
         passwordSecret:
           name: posthog-posthog-postgresql
           key: postgresql-password
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: postgres-podmonitor
+  namespace: posthog
+  labels:
+    app.kubernetes.io/part-of: compose
+spec:
+  podMetricsEndpoints:
+    - path: /metrics
+      targetPort: 9187
+  namespaceSelector:
+    matchNames:
+      - posthog
+  selector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - prometheus-postgres-exporter
+      - key: compose.ai/ignore-monitoring
+        operator: DoesNotExist
+        values:
+          - "ignore"
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
@@ -117,14 +155,33 @@ spec:
         operator: "Exists"
         effect: "NoSchedule"
 
-    # -- Map of annotations to add to the pods.
-    annotations:
-      prometheus.io/scrape: "true"
-      prometheus.io/path: /metrics
-      prometheus.io/port: "9121"
-
     # -- Specify the target Redis instance to monitor.
     redisAddress: redis://posthog-posthog-redis-master:6379
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: redis-podmonitor
+  namespace: posthog
+  labels:
+    app.kubernetes.io/part-of: compose
+spec:
+  podMetricsEndpoints:
+    - path: /metrics
+      targetPort: 9121
+  namespaceSelector:
+    matchNames:
+      - posthog
+  selector:
+    matchExpressions:
+      - key: app.kubernetes.io/name
+        operator: In
+        values:
+          - prometheus-redis-exporter
+      - key: compose.ai/ignore-monitoring
+        operator: DoesNotExist
+        values:
+          - "ignore"
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
@@ -136,7 +193,7 @@ spec:
   chart:
     spec:
       chart: posthog
-      version: "*"
+      version: "30.33.1"
       sourceRef:
         kind: HelmRepository
         name: posthog
@@ -294,12 +351,6 @@ spec:
         # -- Persistent Volume size
         size: 20Gi
 
-      ## -- ClickHouse pod(s) annotation.
-      podAnnotations:
-        # Uncomment those lines if you want Prometheus server to scrape ClickHouse pods metrics.
-        prometheus.io/scrape: "true"
-        prometheus.io/path: /metrics
-        prometheus.io/port: "9363"
       settings:
         # Uncomment those lines if you want to enable the built-in Prometheus HTTP endpoint in ClickHouse.
         prometheus/endpoint: /metrics
@@ -343,5 +394,28 @@ spec:
       #enabled: true
     #prometheus-redis-exporter:
       #enabled: true
-    
-# TODO Add all prometheus alerts and scraping for prometheus + loki
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: clickhouse-podmonitor
+  namespace: posthog
+  labels:
+    app.kubernetes.io/part-of: compose
+spec:
+  podMetricsEndpoints:
+    - path: /metrics
+      targetPort: 9363
+  namespaceSelector:
+    matchNames:
+      - posthog
+  selector:
+    matchExpressions:
+      - key: clickhouse.altinity.com/app
+        operator: In
+        values:
+          - chop
+      - key: compose.ai/ignore-monitoring
+        operator: DoesNotExist
+        values:
+          - "ignore"
