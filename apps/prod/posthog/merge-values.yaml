@@ -174,5 +174,8 @@ spec:
           effect: "NoSchedule"
     ingress:
       # -- Ingress handler type. Defaults to `nginx` if nginx is enabled and to `clb` on gcp.
+      # We're using our own so this doesn't actually do anything but we then put the ingress class annotation on the ingress which makes it get picked up by our posthog-specific nginx controller
       type: "posthog-nginx"
+      annotations:
+        kubernetes.io/ingress.class: "posthog-nginx"
       hostname: "posthog.prod.cluster.compose.ai"
