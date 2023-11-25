@@ -419,3 +419,57 @@ spec:
         operator: DoesNotExist
         values:
           - "ignore"
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: zookeeper-podmonitor
+  namespace: posthog
+  labels:
+    app.kubernetes.io/part-of: compose
+spec:
+  podMetricsEndpoints:
+    - path: /metrics
+      targetPort: 9141
+  namespaceSelector:
+    matchNames:
+      - posthog
+  selector:
+    matchExpressions:
+      - key: app.kubernetes.io/component
+        operator: In
+        values:
+          - zookeeper
+      - key: compose.ai/ignore-monitoring
+        operator: DoesNotExist
+        values:
+          - "ignore"
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: posthog-web-podmonitor
+  namespace: posthog
+  labels:
+    app.kubernetes.io/part-of: compose
+spec:
+  podMetricsEndpoints:
+    - path: /metrics
+      targetPort: 8001
+  namespaceSelector:
+    matchNames:
+      - posthog
+  selector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - posthog
+      - key: role
+        operator: In
+        values:
+          - web
+      - key: compose.ai/ignore-monitoring
+        operator: DoesNotExist
+        values:
+          - "ignore"
