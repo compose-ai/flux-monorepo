@@ -1,0 +1,210 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: posthog
+  namespace: metrics
+spec:
+  groups:
+    - name: posthog
+      rules:
+      - alert: IngestionOverflowProduction
+        expr: |
+          sum(
+            delta(
+              kafka_topic_partition_current_offset{
+                topic="events_plugin_ingestion_overflow"
+              }[1m]
+            )
+          ) > 0
+        for: 10m
+        labels:
+          rotation: common
+          severity: warning
+        annotations:
+          summary: |
+            Ingestion has pushed events to the overflow topic for
+            10 minutes.
+          description: Due to some scenario such as many events from a
+            single distinct_id, we have pushed some events to the
+            ingestion overflow topic so we can keed up with events from
+            other users. Check partition stats for how many events we've
+            received for each distinct_id or team_id, or look in
+            ClickHouse for any recent trends for distinct_ids.
+
+      - alert: IngestionOverflowConsumerLag
+        expr: |
+          sum(
+            delta(
+              kafka_consumergroup_lag{
+                topic='events_plugin_ingestion_overflow', consumergroup="clickhouse-ingestion-overflow"
+              }[2m]
+            )
+          ) > 0
+        for: 10m
+        labels:
+          rotation: common
+          severity: warning
+        annotations:
+          summary: |
+            Ingestion lag on the Overflow topic has been increasing over the past 10 minutes.
+          description: |
+            Lag on the ingestion topic is increasing. Check that the
+            consumer for the topic is running. Also check the production
+            rate to the topic to see if there is an unusually high volume
+            going to it.
+
+      - alert: DjangoErrorRate
+        expr: |
+          sum by (role) (increase(django_http_responses_total_by_status_view_method_total{status=~"^5.*"}[5m])) /
+          sum by (role) (increase(django_http_responses_total_by_status_view_method_total[5m])) > 0.02
+        for: 5m
+        labels:
+          rotation: common
+          severity: critical
+        annotations:
+          summary: Django error rate exceeds 2% on role {{ $labels.role }}
+          description: |
+            Django reports a high error rate (5xx status codes) on role {{ $labels.role }}.
+            Check the "Exceptions" widget in the "HTTP by application endpoint" dashboard and the pod logs to
+            identify the issue. Either a dependency is unhealthy, or a recent code change triggered a bug and
+            needs to be rolled-back.
+
+      - alert: End2EndIngestionLag
+        expr: (max by(scenario) (posthog_celery_observed_ingestion_lag_seconds{scenario=~"ingestion_api|ingestion"})) > 1200
+        for: 5m
+        labels:
+          rotation: common
+          severity: critical
+        annotations:
+          summary: End-to-end analytics event ingestion lag exceeds 20 minutes for more than 5 minutes.
+          description: |
+            Our end-to-end probe measured an ingestion lag higher than 20 minutes for scenario {{ $labels.scenario }}.
+            Check the "Kafka (cluster overview)" dashboard to identify what topics and partitions are lagging and
+            follow the https://posthog.com/docs/runbook/services/plugin-server/ingestion-lag runbook for recovery
+            steps.
+
+      - alert: ExportsConsumerDelayed
+        expr: (time() * 1000 - (max(latest_processed_timestamp_ms{groupId="async_handlers",topic="clickhouse_events_json"}))) > 300000
+        for: 5m
+        labels:
+          rotation: common
+          severity: critical
+        annotations:
+          summary: Exports and WebHooks have delayed by more than 5 minutes for more than 5 minutes.
+          description: "Latest timestamp registered as processed on topic 'clickhouse_events_json', consumer group 'async_handlers' more then 5 minutes old"
+
+      - alert: ScheduledTasksConsumerDelayed
+        expr: (time() * 1000 - (max(latest_processed_timestamp_ms{groupId="scheduled-tasks-runner",topic="scheduled_tasks"}))) > 300000
+        for: 10m
+        labels:
+          rotation: common
+          severity: critical
+        annotations:
+          summary: RunEveryX tasks have been delayed by more than 5 minutes for more than 5 minutes.
+          description: "Latest timestamp registered as processed on topic 'scheduled_tasks', consumer group 'scheduled-tasks-runner' more then 5 minutes old"
+      - alert: IngestionConsumerDelayed
+        expr: (time() * 1000 - (max(latest_processed_timestamp_ms{groupId="ingestion",topic="events_plugin_ingestion"}))) > 300000
+        for: 5m
+        labels:
+          rotation: common
+          severity: critical
+        annotations:
+          summary: Ingestion for analytics events has been delayed by more than 5 minutes for more than 5 minutes.
+          description: "Latest timestamp registered as processed on topic 'events_plugin_ingestion', consumer group 'ingestion' more then 5 minutes old"
+
+      - alert: RecordingsConsumerDelayed
+        # TODO: fix these consumer delay alerts. The issue with the
+        # current alerts is that they are not the _oldest_ message not
+        # processed but the _newest_ of the oldest _per partition_. This
+        # applies to all the alerts for consumer lag above. Adjusting the
+        # query to the below could work, but also simply using absolute
+        # lag may be the least work
+        #
+        # ```
+        # (time() * 1000 - (
+        #   min(
+        #     max(
+        #       latest_processed_timestamp_ms{groupId="session-recordings",topic="session_recording_events"}
+        #     ) by (topic)
+        #   )
+        # ))
+        # ```
+        #
+        # The issue with the above is when there is no volume on a
+        # partition, then we end up not reporting a timestamp for this
+        # partition and the alert will sound incorrectly.
+        expr: (time() * 1000 - (max(latest_processed_timestamp_ms{groupId="session-recordings",topic="session_recording_events"}))) > 300000
+        for: 5m
+        labels:
+          rotation: common
+          severity: critical
+        annotations:
+          summary: Ingestion for session recording and web performance events has been delayed by more than 5 minutes for more than 5 minutes.
+          description: "Latest timestamp registered as processed on topic 'session_recording_events', consumer group 'session-recordings' more then 5 minutes old"
+
+      - alert: RecordingsConsumerDLQ
+        expr: sum(delta(kafka_topic_partition_current_offset{topic="session_recording_events_dlq"}[5m])) > 0
+        for: 1m
+        labels:
+          rotation: common
+          severity: critical
+        annotations:
+          summary: Failed to process some session recording events and have been sent to the dead letter queue for review.
+          description: "The `session_recording_events_dlq` topic offset has increased over the past 5 minutes."
+
+      - alert: GraphileJobExecutionLag
+        expr: (max by(task_identifier) (posthog_celery_graphile_lag_seconds{task_identifier!="bufferJob"})) > 900
+        for: 5m
+        labels:
+          rotation: common
+          severity: critical
+        annotations:
+          summary: Graphile jobs execution lag exceeds 15 minutes for more than 5 minutes.
+          runbook_url: https://github.com/PostHog/product-internal/blob/main/infrastructure/runbooks/pipeline/graphile.md
+          description: |
+            Jobs of type {{ $labels.task_identifier }} have been sitting in the Graphile execution queue for more
+            than 5 minutes, possibly delaying apps and/or exports.
+            Check https://github.com/PostHog/product-internal/blob/main/infrastructure/runbooks/pipeline/graphile.md
+            for more context and steps to recovery.
+
+      - alert: CeleryQueueDepth
+        expr: (max (posthog_celery_queue_depth)) > 1000
+        for: 10m
+        labels:
+          rotation: common
+          severity: critical
+        annotations:
+          summary: Celery job execution delayed for more than 10 minutes.
+          description: |
+            The Celery jobs queue (stored in Redis) is filling up faster than it is consumed. This impacts our
+            monitoring, as some paging monitors depend on metrics exported by Celery jobs.
+              - make sure posthog-worker pods are healthy and check their logs
+              - look for recent code changes to posthog/celery.py and rollback if needed
+              - check the health of Postgres and Clickhouse, many jobs query them and could hang if these
+                stores get slow
+
+      # TODO: These were the original Kafka limits from posthog's template, but we do have % disk space alerts so hopefully that's enough for now
+      #- alert: KafkaDiskCritical
+        #expr: min by (instance) (aws_msk_node_filesystem_free_bytes{mountpoint="/kafka/datalogs"}) < 536870912000
+        #for: 2m
+        #labels:
+          #severity: critical
+          #rotation: common
+        #annotations:
+          #summary: Less than 500GB free on Kafka broker(s)
+          #description: |
+            #Kafka disks are getting full and should be upscaled before we lose new events.
+            #We should upscale the disks, or (as a last-ditch option) lower the data retention
+            #to free up disk space.
+
+      #- alert: KafkaDiskCapacityPlanning
+        #expr: min by (instance) (aws_msk_node_filesystem_free_bytes{mountpoint="/kafka/datalogs"}) < 1036870912000
+        #for: 2m
+        #labels:
+          #severity: warning
+          #rotation: infra
+        #annotations:
+          #summary: Less than 1TB free on Kafka broker(s)
+          #description: |
+            #Kafka disks are getting full and should be upscaled before we lose new events.
+            #If not handled, the KafkaDiskCritical will page the common rotation at 500GB.
