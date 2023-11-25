@@ -655,34 +655,34 @@ spec:
   controller: k8s.io/posthog-ingress-nginx
 ---
 apiVersion: admissionregistration.k8s.io/v1
-  kind: ValidatingWebhookConfiguration
-  metadata:
-    labels:
-      app.kubernetes.io/component: admission-webhook
-      app.kubernetes.io/instance: posthog-ingress-nginx
-      app.kubernetes.io/name: posthog-ingress-nginx
-      app.kubernetes.io/part-of: posthog-ingress-nginx
-      app.kubernetes.io/version: 1.6.4
-    name: posthog-ingress-nginx-admission
-  webhooks:
-  - admissionReviewVersions:
+kind: ValidatingWebhookConfiguration
+metadata:
+  labels:
+    app.kubernetes.io/component: admission-webhook
+    app.kubernetes.io/instance: posthog-ingress-nginx
+    app.kubernetes.io/name: posthog-ingress-nginx
+    app.kubernetes.io/part-of: posthog-ingress-nginx
+    app.kubernetes.io/version: 1.6.4
+  name: posthog-ingress-nginx-admission
+webhooks:
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: posthog-ingress-nginx-controller-admission
+      namespace: posthog-ingress-nginx
+      path: /networking/v1/ingresses
+  failurePolicy: Fail
+  matchPolicy: Equivalent
+  name: validate.nginx.ingress.kubernetes.io
+  rules:
+  - apiGroups:
+    - networking.k8s.io
+    apiVersions:
     - v1
-    clientConfig:
-      service:
-        name: posthog-ingress-nginx-controller-admission
-        namespace: posthog-ingress-nginx
-        path: /networking/v1/ingresses
-    failurePolicy: Fail
-    matchPolicy: Equivalent
-    name: validate.nginx.ingress.kubernetes.io
-    rules:
-    - apiGroups:
-      - networking.k8s.io
-      apiVersions:
-      - v1
-      operations:
-      - CREATE
-      - UPDATE
-      resources:
-      - ingresses
-    sideEffects: None
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - ingresses
+  sideEffects: None
