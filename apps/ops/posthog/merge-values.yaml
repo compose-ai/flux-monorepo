@@ -14,7 +14,7 @@ spec:
     
     # -- Site url specifies the canonical URL root the site can be accessed using.
     # This is used to e.g. generate shareable links to Dashboards.
-    siteUrl: "posthog.ops.cluster.compose.ai"
+    siteUrl: "https://posthog.ops.cluster.compose.ai"
 
     web:
       env:
