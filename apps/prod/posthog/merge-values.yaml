@@ -155,16 +155,34 @@ spec:
     clickhouse:
       nodeSelector:
         compose.ai/nodepool: posthog
+      tolerations:
+        - key: "posthog"
+          operator: "Exists"
+          effect: "NoSchedule"
+      layout:
+        shards: 5
+        replicas: 2
       persistence:
         # -- Enable data persistence using PVC.
         enabled: true
 
         # -- Persistent Volume size
         size: 500Gi
-      tolerations:
-        - key: "posthog"
-          operator: "Exists"
-          effect: "NoSchedule"
+      # We probably could update the backup script and do incremental backups by using the new scripts from here with the newest image too
+      # https://github.com/Altinity/clickhouse-backup/tree/master
+      backup:
+        enabled: true
+        env:
+          - name: "REMOTE_STORAGE"
+            value: "gcs"
+          - name: "GCS_BUCKET"
+            value: "composeai_clickhouse_backups"
+          - name: "GCS_PATH"
+            value: "backup/{cluster}/{shard}"
+          - name: "GCS_OBJECT_DISK_PATH"
+            value: "object_disks/{cluster}/{shard}"
+          - name: "GCS_DEBUG"
+            value: "true"
     hooks:
       nodeSelector:
         compose.ai/nodepool: posthog
