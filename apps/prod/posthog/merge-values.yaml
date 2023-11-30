@@ -160,8 +160,8 @@ spec:
           operator: "Exists"
           effect: "NoSchedule"
       layout:
-        shards: 5
-        replicas: 2
+        shardsCount: 5
+        replicasCount: 2
       persistence:
         # -- Enable data persistence using PVC.
         enabled: true
