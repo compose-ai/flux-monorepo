@@ -22,84 +22,84 @@ spec:
         - name: SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_DOMAINS
           value: "compose.ai"
       nodeSelector:
-        cloud.google.com/gke-nodepool: posthog
+        compose.ai/nodepool: posthog
       tolerations:
         - key: "posthog"
           operator: "Exists"
           effect: "NoSchedule"
     worker:
       nodeSelector:
-        cloud.google.com/gke-nodepool: posthog
+        compose.ai/nodepool: posthog
       tolerations:
         - key: "posthog"
           operator: "Exists"
           effect: "NoSchedule"
     plugins:
       nodeSelector:
-        cloud.google.com/gke-nodepool: posthog
+        compose.ai/nodepool: posthog
       tolerations:
         - key: "posthog"
           operator: "Exists"
           effect: "NoSchedule"
     pluginsAsync:
       nodeSelector:
-        cloud.google.com/gke-nodepool: posthog
+        compose.ai/nodepool: posthog
       tolerations:
         - key: "posthog"
           operator: "Exists"
           effect: "NoSchedule"
     pluginsIngestion:
       nodeSelector:
-        cloud.google.com/gke-nodepool: posthog
+        compose.ai/nodepool: posthog
       tolerations:
         - key: "posthog"
           operator: "Exists"
           effect: "NoSchedule"
     pluginsAnalyticsIngestion:
       nodeSelector:
-        cloud.google.com/gke-nodepool: posthog
+        compose.ai/nodepool: posthog
       tolerations:
         - key: "posthog"
           operator: "Exists"
           effect: "NoSchedule"
     recordingsIngestion:
       nodeSelector:
-        cloud.google.com/gke-nodepool: posthog
+        compose.ai/nodepool: posthog
       tolerations:
         - key: "posthog"
           operator: "Exists"
           effect: "NoSchedule"
     recordingsBlobIngestion:
       nodeSelector:
-        cloud.google.com/gke-nodepool: posthog
+        compose.ai/nodepool: posthog
       tolerations:
         - key: "posthog"
           operator: "Exists"
           effect: "NoSchedule"
     pluginsExports:
       nodeSelector:
-        cloud.google.com/gke-nodepool: posthog
+        compose.ai/nodepool: posthog
       tolerations:
         - key: "posthog"
           operator: "Exists"
           effect: "NoSchedule"
     pluginsJobs:
       nodeSelector:
-        cloud.google.com/gke-nodepool: posthog
+        compose.ai/nodepool: posthog
       tolerations:
         - key: "posthog"
           operator: "Exists"
           effect: "NoSchedule"
     pluginsScheduler:
       nodeSelector:
-        cloud.google.com/gke-nodepool: posthog
+        compose.ai/nodepool: posthog
       tolerations:
         - key: "posthog"
           operator: "Exists"
           effect: "NoSchedule"
     temporalPyWorker:
       nodeSelector:
-        cloud.google.com/gke-nodepool: posthog
+        compose.ai/nodepool: posthog
       tolerations:
         - key: "posthog"
           operator: "Exists"
@@ -107,7 +107,7 @@ spec:
     postgresql:
       master:
         nodeSelector:
-          cloud.google.com/gke-nodepool: posthog
+          compose.ai/nodepool: posthog
         tolerations:
           - key: "posthog"
             operator: "Exists"
@@ -119,7 +119,7 @@ spec:
         size: 100Gi
     _pgbouncer:
       nodeSelector:
-        cloud.google.com/gke-nodepool: posthog
+        compose.ai/nodepool: posthog
       tolerations:
         - key: "posthog"
           operator: "Exists"
@@ -127,14 +127,14 @@ spec:
     redis:
       master:
         nodeSelector:
-          cloud.google.com/gke-nodepool: posthog
+          compose.ai/nodepool: posthog
         tolerations:
           - key: "posthog"
             operator: "Exists"
             effect: "NoSchedule"
     kafka:
       nodeSelector:
-        cloud.google.com/gke-nodepool: posthog
+        compose.ai/nodepool: posthog
       persistence:
         # - Enable data persistence using PVC.
         enabled: true
@@ -147,14 +147,14 @@ spec:
           effect: "NoSchedule"
     zookeeper:
       nodeSelector:
-        cloud.google.com/gke-nodepool: posthog
+        compose.ai/nodepool: posthog
       tolerations:
         - key: "posthog"
           operator: "Exists"
           effect: "NoSchedule"
     clickhouse:
       nodeSelector:
-        cloud.google.com/gke-nodepool: posthog
+        compose.ai/nodepool: posthog
       persistence:
         # -- Enable data persistence using PVC.
         enabled: true
@@ -167,7 +167,7 @@ spec:
           effect: "NoSchedule"
     hooks:
       nodeSelector:
-        cloud.google.com/gke-nodepool: posthog
+        compose.ai/nodepool: posthog
       tolerations:
         - key: "posthog"
           operator: "Exists"
