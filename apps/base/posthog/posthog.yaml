@@ -226,6 +226,8 @@ spec:
       hpa:
         # -- Whether to create a HorizontalPodAutoscaler for the events stack.
         enabled: true
+      pdb:
+        enabled: true
       resources:
         requests:
           cpu: 1000m
@@ -258,6 +260,8 @@ spec:
 
     web:
       hpa:
+        enabled: true
+      pdb:
         enabled: true
       env:
         # -- Set google oauth 2 key. Requires posthog ee license.
