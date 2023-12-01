@@ -172,6 +172,7 @@ spec:
       # https://github.com/Altinity/clickhouse-backup/tree/master
       backup:
         enabled: true
+        gcsSecret: gcs-secret
         env:
           - name: ALLOW_EMPTY_BACKUPS
             value: "true"
@@ -184,6 +185,8 @@ spec:
             value: "0"
           - name: "REMOTE_STORAGE"
             value: "gcs"
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: /var/secrets/google/key.json
           - name: "GCS_BUCKET"
             value: "composeai_clickhouse_backups"
           - name: "GCS_PATH"

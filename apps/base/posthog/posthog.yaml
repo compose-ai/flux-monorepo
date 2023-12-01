@@ -196,7 +196,7 @@ spec:
   chart:
     spec:
       chart: posthog
-      version: "30.33.2"
+      version: "30.33.3"
       sourceRef:
         kind: HelmRepository
         name: posthog
@@ -382,10 +382,10 @@ spec:
         prometheus/asynchronous_metrics: true
 
 
-      backup:
+      #backup:
         # https://posthog.com/docs/self-host/runbook/clickhouse/backup
         # https://github.com/AlexAkulov/clickhouse-backup
-        enabled: false
+        #enabled: false
 
     ## External Object Storage configuration
     ##
