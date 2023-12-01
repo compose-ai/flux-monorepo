@@ -216,6 +216,9 @@ spec:
     _pgbouncer:
       hpa:
         enabled: true
+      resources:
+        requests:
+          cpu: 100m
       exporter:
         enabled: true
 
@@ -223,6 +226,9 @@ spec:
       hpa:
         # -- Whether to create a HorizontalPodAutoscaler for the events stack.
         enabled: true
+      resources:
+        requests:
+          cpu: 1000m
 
     decide:
       # -- Whether to install the PostHog decide stack or not.
@@ -233,6 +239,9 @@ spec:
       hpa:
         # -- Whether to create a HorizontalPodAutoscaler for the worker stack.
         enabled: true
+      resources:
+        requests:
+          cpu: 100m
 
     plugins:
       # -- Whether to install the PostHog plugin-server stack or not.
@@ -243,6 +252,9 @@ spec:
       hpa:
         # -- Whether to create a HorizontalPodAutoscaler for the plugin stack.
         enabled: true
+      resources:
+        requests:
+          cpu: 1000m
 
     web:
       hpa:
@@ -257,6 +269,9 @@ spec:
         # -- Set google oauth 2 whitelisted domains users can log in from.
         - name: SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_DOMAINS
           value: "compose.ai"
+      resources:
+        requests:
+          cpu: 1000m
 
     # TODO May need to use this instead of web oauth settings because says it requires a posthog ee license
     saml:
