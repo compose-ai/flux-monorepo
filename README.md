@@ -501,3 +501,13 @@ This repository contains the following GitHub CI workflows:
 
 * the [test](./.github/workflows/test.yaml) workflow validates the Kubernetes manifests and Kustomize overlays with [kubeconform](https://github.com/yannh/kubeconform)
 * the [e2e](./.github/workflows/e2e.yaml) workflow starts a Kubernetes cluster in CI and tests the stage setup by running Flux in Kubernetes Kind
+
+# Posthog
+## Kafka
+### Topic is Lagging
+Sometimes we may need to increase # of partitions on certain kafka topics. You can get a shell into the kafka host and then run this command with the topic name and number of partitions you want. Remember, you can only really increase Kafka partitions
+```
+kafka-topics.sh --zookeeper posthog-posthog-zookeeper:2181 --alter --topic <topic_name> --partitions <num_partitions>
+```
+
+You'd also want to make sure you have enough plugin/ingestor pods to actually take advantage of that # of partitions.
