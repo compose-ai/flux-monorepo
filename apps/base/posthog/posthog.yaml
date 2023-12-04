@@ -203,6 +203,10 @@ spec:
       interval: 12h
   # https://github.com/compose-ai/charts-clickhouse/blob/main/charts/posthog/values.yaml
   values:
+    # Nothing in particular about this image, just the image when we nailed it down instead of using :latest tag
+    image:
+      sha: becc5127ec4e322aa13814542bf887764e2ef3af
+
     # -- Cloud service being deployed on (example: `aws`, `azure`, `do`, `gcp`, `other`).
     cloud: "gcp"
     
