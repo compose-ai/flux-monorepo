@@ -229,7 +229,7 @@ spec:
     events:
       hpa:
         # -- Whether to create a HorizontalPodAutoscaler for the events stack.
-        maxpods: 15
+        maxpods: 20
         enabled: true
       pdb:
         enabled: true
