@@ -260,7 +260,7 @@ spec:
         enabled: true
       resources:
         requests:
-          cpu: 600m
+          cpu: 1000m
 
     web:
       hpa:
