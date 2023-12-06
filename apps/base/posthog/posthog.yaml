@@ -229,6 +229,7 @@ spec:
     events:
       hpa:
         # -- Whether to create a HorizontalPodAutoscaler for the events stack.
+        maxpods: 15
         enabled: true
       pdb:
         enabled: true
@@ -257,6 +258,7 @@ spec:
       # pluginsScheduler.
       hpa:
         # -- Whether to create a HorizontalPodAutoscaler for the plugin stack.
+        maxpods: 15
         enabled: true
       resources:
         requests:
