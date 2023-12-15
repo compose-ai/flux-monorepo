@@ -7,6 +7,17 @@ spec:
   groups:
     - name: posthog
       rules:
+      - alert: Ingress Failures
+        expr: |
+          sum(rate(nginx_ingress_controller_requests{namespace=~"posthog-ingress-nginx",status!~"[4-5].*"}[2m])) by (ingress) / sum(rate(nginx_ingress_controller_requests{namespace=~"posthog-ingress-nginx"}[2m])) by (ingress) < .99
+        for: 5m
+        labels:
+          rotation: common
+          severity: critical
+        annotations:
+          summary: |
+            Ingress success rate dropped below 99%, which is not normal except during outages
+          description: Probably due to some pods being down or in a crash loop or just slow enough that it doesn't quite look like a crash loop but still doesn't let through enough traffic
       - alert: IngestionOverflowProduction
         expr: |
           sum(
