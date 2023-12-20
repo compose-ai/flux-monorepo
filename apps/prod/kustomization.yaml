@@ -7,6 +7,7 @@ resources:
   - ../base/nvidia-dcgm
   - ../base/posthog
   - posthog
+  - grafana
   - context-server
   - premium-context-server
   - model-server
