@@ -1,12 +1,4 @@
 apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    app.kubernetes.io/instance: premium-ingress-nginx
-    app.kubernetes.io/name: premium-ingress-nginx
-  name: premium-ingress-nginx
----
-apiVersion: v1
 automountServiceAccountToken: true
 kind: ServiceAccount
 metadata:
@@ -17,7 +9,7 @@ metadata:
     app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
   name: premium-ingress-nginx
-  namespace: premium-ingress-nginx
+  namespace: premium-context-server
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -29,7 +21,7 @@ metadata:
     app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
   name: premium-ingress-nginx-admission
-  namespace: premium-ingress-nginx
+  namespace: premium-context-server
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -41,7 +33,7 @@ metadata:
     app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
   name: premium-ingress-nginx
-  namespace: premium-ingress-nginx
+  namespace: premium-context-server
 rules:
 - apiGroups:
   - ""
@@ -131,7 +123,7 @@ metadata:
     app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
   name: premium-ingress-nginx-admission
-  namespace: premium-ingress-nginx
+  namespace: premium-context-server
 rules:
 - apiGroups:
   - ""
@@ -251,7 +243,7 @@ metadata:
     app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
   name: premium-ingress-nginx
-  namespace: premium-ingress-nginx
+  namespace: premium-context-server
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -259,7 +251,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: premium-ingress-nginx
-  namespace: premium-ingress-nginx
+  namespace: premium-context-server
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -271,7 +263,7 @@ metadata:
     app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
   name: premium-ingress-nginx-admission
-  namespace: premium-ingress-nginx
+  namespace: premium-context-server
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -279,7 +271,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: premium-ingress-nginx-admission
-  namespace: premium-ingress-nginx
+  namespace: premium-context-server
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -297,7 +289,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: premium-ingress-nginx
-  namespace: premium-ingress-nginx
+  namespace: premium-context-server
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -316,7 +308,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: premium-ingress-nginx-admission
-  namespace: premium-ingress-nginx
+  namespace: premium-context-server
 ---
 apiVersion: v1
 data:
@@ -337,7 +329,7 @@ metadata:
     app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
   name: premium-ingress-nginx-controller
-  namespace: premium-ingress-nginx
+  namespace: premium-context-server
 ---
 apiVersion: v1
 kind: Service
@@ -349,7 +341,7 @@ metadata:
     app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
   name: premium-ingress-nginx-controller
-  namespace: premium-ingress-nginx
+  namespace: premium-context-server
 spec:
   externalTrafficPolicy: Local
   ipFamilies:
@@ -385,7 +377,7 @@ metadata:
     app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
   name: premium-ingress-nginx-controller-admission
-  namespace: premium-ingress-nginx
+  namespace: premium-context-server
 spec:
   ports:
   - appProtocol: https
@@ -408,7 +400,7 @@ metadata:
     app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
   name: premium-ingress-nginx-controller
-  namespace: premium-ingress-nginx
+  namespace: premium-context-server
 spec:
   replicas: 1
   minReadySeconds: 0
@@ -563,7 +555,7 @@ metadata:
     app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
   name: premium-ingress-nginx-admission-create
-  namespace: premium-ingress-nginx
+  namespace: premium-context-server
 spec:
   template:
     metadata:
@@ -610,7 +602,7 @@ metadata:
     app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
   name: premium-ingress-nginx-admission-patch
-  namespace: premium-ingress-nginx
+  namespace: premium-context-server
 spec:
   template:
     metadata:
@@ -678,7 +670,7 @@ webhooks:
   clientConfig:
     service:
       name: premium-ingress-nginx-controller-admission
-      namespace: premium-ingress-nginx
+      namespace: premium-context-server
       path: /networking/v1/ingresses
   failurePolicy: Fail
   matchPolicy: Equivalent
@@ -699,7 +691,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
   name: premium-ingress-nginx-podmonitor
-  namespace: premium-ingress-nginx
+  namespace: premium-context-server
   labels:
     app.kubernetes.io/part-of: compose
 spec:
@@ -708,7 +700,7 @@ spec:
       targetPort: 10254
   namespaceSelector:
     matchNames:
-      - premium-ingress-nginx
+      - premium-context-server
   selector:
     matchExpressions:
       - key: app.kubernetes.io/name
