@@ -402,7 +402,7 @@ metadata:
   name: premium-ingress-nginx-controller
   namespace: premium-context-server
 spec:
-  replicas: 1
+  replicas: 2
   minReadySeconds: 0
   revisionHistoryLimit: 10
   selector:
