@@ -8,3 +8,4 @@ resources:
   - service.yaml
   - autoscaler.yaml
   - opentelemetry.yaml
+  - ingress-nginx.yaml

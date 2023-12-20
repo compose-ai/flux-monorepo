@@ -2,9 +2,9 @@ apiVersion: v1
 kind: Namespace
 metadata:
   labels:
-    app.kubernetes.io/instance: posthog-ingress-nginx
-    app.kubernetes.io/name: posthog-ingress-nginx
-  name: posthog-ingress-nginx
+    app.kubernetes.io/instance: premium-ingress-nginx
+    app.kubernetes.io/name: premium-ingress-nginx
+  name: premium-ingress-nginx
 ---
 apiVersion: v1
 automountServiceAccountToken: true
@@ -12,36 +12,36 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/component: controller
-    app.kubernetes.io/instance: posthog-ingress-nginx
-    app.kubernetes.io/name: posthog-ingress-nginx
-    app.kubernetes.io/part-of: posthog-ingress-nginx
+    app.kubernetes.io/instance: premium-ingress-nginx
+    app.kubernetes.io/name: premium-ingress-nginx
+    app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
-  name: posthog-ingress-nginx
-  namespace: posthog-ingress-nginx
+  name: premium-ingress-nginx
+  namespace: premium-ingress-nginx
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/component: admission-webhook
-    app.kubernetes.io/instance: posthog-ingress-nginx
-    app.kubernetes.io/name: posthog-ingress-nginx
-    app.kubernetes.io/part-of: posthog-ingress-nginx
+    app.kubernetes.io/instance: premium-ingress-nginx
+    app.kubernetes.io/name: premium-ingress-nginx
+    app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
-  name: posthog-ingress-nginx-admission
-  namespace: posthog-ingress-nginx
+  name: premium-ingress-nginx-admission
+  namespace: premium-ingress-nginx
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   labels:
     app.kubernetes.io/component: controller
-    app.kubernetes.io/instance: posthog-ingress-nginx
-    app.kubernetes.io/name: posthog-ingress-nginx
-    app.kubernetes.io/part-of: posthog-ingress-nginx
+    app.kubernetes.io/instance: premium-ingress-nginx
+    app.kubernetes.io/name: premium-ingress-nginx
+    app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
-  name: posthog-ingress-nginx
-  namespace: posthog-ingress-nginx
+  name: premium-ingress-nginx
+  namespace: premium-ingress-nginx
 rules:
 - apiGroups:
   - ""
@@ -93,7 +93,7 @@ rules:
 - apiGroups:
   - coordination.k8s.io
   resourceNames:
-  - posthog-ingress-nginx-leader
+  - premium-ingress-nginx-leader
   resources:
   - leases
   verbs:
@@ -126,12 +126,12 @@ kind: Role
 metadata:
   labels:
     app.kubernetes.io/component: admission-webhook
-    app.kubernetes.io/instance: posthog-ingress-nginx
-    app.kubernetes.io/name: posthog-ingress-nginx
-    app.kubernetes.io/part-of: posthog-ingress-nginx
+    app.kubernetes.io/instance: premium-ingress-nginx
+    app.kubernetes.io/name: premium-ingress-nginx
+    app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
-  name: posthog-ingress-nginx-admission
-  namespace: posthog-ingress-nginx
+  name: premium-ingress-nginx-admission
+  namespace: premium-ingress-nginx
 rules:
 - apiGroups:
   - ""
@@ -145,11 +145,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
-    app.kubernetes.io/instance: posthog-ingress-nginx
-    app.kubernetes.io/name: posthog-ingress-nginx
-    app.kubernetes.io/part-of: posthog-ingress-nginx
+    app.kubernetes.io/instance: premium-ingress-nginx
+    app.kubernetes.io/name: premium-ingress-nginx
+    app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
-  name: posthog-ingress-nginx
+  name: premium-ingress-nginx
 rules:
 - apiGroups:
   - ""
@@ -227,11 +227,11 @@ kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/component: admission-webhook
-    app.kubernetes.io/instance: posthog-ingress-nginx
-    app.kubernetes.io/name: posthog-ingress-nginx
-    app.kubernetes.io/part-of: posthog-ingress-nginx
+    app.kubernetes.io/instance: premium-ingress-nginx
+    app.kubernetes.io/name: premium-ingress-nginx
+    app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
-  name: posthog-ingress-nginx-admission
+  name: premium-ingress-nginx-admission
 rules:
 - apiGroups:
   - admissionregistration.k8s.io
@@ -246,77 +246,77 @@ kind: RoleBinding
 metadata:
   labels:
     app.kubernetes.io/component: controller
-    app.kubernetes.io/instance: posthog-ingress-nginx
-    app.kubernetes.io/name: posthog-ingress-nginx
-    app.kubernetes.io/part-of: posthog-ingress-nginx
+    app.kubernetes.io/instance: premium-ingress-nginx
+    app.kubernetes.io/name: premium-ingress-nginx
+    app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
-  name: posthog-ingress-nginx
-  namespace: posthog-ingress-nginx
+  name: premium-ingress-nginx
+  namespace: premium-ingress-nginx
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: posthog-ingress-nginx
+  name: premium-ingress-nginx
 subjects:
 - kind: ServiceAccount
-  name: posthog-ingress-nginx
-  namespace: posthog-ingress-nginx
+  name: premium-ingress-nginx
+  namespace: premium-ingress-nginx
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   labels:
     app.kubernetes.io/component: admission-webhook
-    app.kubernetes.io/instance: posthog-ingress-nginx
-    app.kubernetes.io/name: posthog-ingress-nginx
-    app.kubernetes.io/part-of: posthog-ingress-nginx
+    app.kubernetes.io/instance: premium-ingress-nginx
+    app.kubernetes.io/name: premium-ingress-nginx
+    app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
-  name: posthog-ingress-nginx-admission
-  namespace: posthog-ingress-nginx
+  name: premium-ingress-nginx-admission
+  namespace: premium-ingress-nginx
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: posthog-ingress-nginx-admission
+  name: premium-ingress-nginx-admission
 subjects:
 - kind: ServiceAccount
-  name: posthog-ingress-nginx-admission
-  namespace: posthog-ingress-nginx
+  name: premium-ingress-nginx-admission
+  namespace: premium-ingress-nginx
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   labels:
-    app.kubernetes.io/instance: posthog-ingress-nginx
-    app.kubernetes.io/name: posthog-ingress-nginx
-    app.kubernetes.io/part-of: posthog-ingress-nginx
+    app.kubernetes.io/instance: premium-ingress-nginx
+    app.kubernetes.io/name: premium-ingress-nginx
+    app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
-  name: posthog-ingress-nginx
+  name: premium-ingress-nginx
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: posthog-ingress-nginx
+  name: premium-ingress-nginx
 subjects:
 - kind: ServiceAccount
-  name: posthog-ingress-nginx
-  namespace: posthog-ingress-nginx
+  name: premium-ingress-nginx
+  namespace: premium-ingress-nginx
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   labels:
     app.kubernetes.io/component: admission-webhook
-    app.kubernetes.io/instance: posthog-ingress-nginx
-    app.kubernetes.io/name: posthog-ingress-nginx
-    app.kubernetes.io/part-of: posthog-ingress-nginx
+    app.kubernetes.io/instance: premium-ingress-nginx
+    app.kubernetes.io/name: premium-ingress-nginx
+    app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
-  name: posthog-ingress-nginx-admission
+  name: premium-ingress-nginx-admission
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: posthog-ingress-nginx-admission
+  name: premium-ingress-nginx-admission
 subjects:
 - kind: ServiceAccount
-  name: posthog-ingress-nginx-admission
-  namespace: posthog-ingress-nginx
+  name: premium-ingress-nginx-admission
+  namespace: premium-ingress-nginx
 ---
 apiVersion: v1
 data:
@@ -332,24 +332,24 @@ kind: ConfigMap
 metadata:
   labels:
     app.kubernetes.io/component: controller
-    app.kubernetes.io/instance: posthog-ingress-nginx
-    app.kubernetes.io/name: posthog-ingress-nginx
-    app.kubernetes.io/part-of: posthog-ingress-nginx
+    app.kubernetes.io/instance: premium-ingress-nginx
+    app.kubernetes.io/name: premium-ingress-nginx
+    app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
-  name: posthog-ingress-nginx-controller
-  namespace: posthog-ingress-nginx
+  name: premium-ingress-nginx-controller
+  namespace: premium-ingress-nginx
 ---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
     app.kubernetes.io/component: controller
-    app.kubernetes.io/instance: posthog-ingress-nginx
-    app.kubernetes.io/name: posthog-ingress-nginx
-    app.kubernetes.io/part-of: posthog-ingress-nginx
+    app.kubernetes.io/instance: premium-ingress-nginx
+    app.kubernetes.io/name: premium-ingress-nginx
+    app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
-  name: posthog-ingress-nginx-controller
-  namespace: posthog-ingress-nginx
+  name: premium-ingress-nginx-controller
+  namespace: premium-ingress-nginx
 spec:
   externalTrafficPolicy: Local
   ipFamilies:
@@ -371,8 +371,8 @@ spec:
     targetPort: prometheus
   selector:
     app.kubernetes.io/component: controller
-    app.kubernetes.io/instance: posthog-ingress-nginx
-    app.kubernetes.io/name: posthog-ingress-nginx
+    app.kubernetes.io/instance: premium-ingress-nginx
+    app.kubernetes.io/name: premium-ingress-nginx
   type: LoadBalancer
 ---
 apiVersion: v1
@@ -380,12 +380,12 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/component: controller
-    app.kubernetes.io/instance: posthog-ingress-nginx
-    app.kubernetes.io/name: posthog-ingress-nginx
-    app.kubernetes.io/part-of: posthog-ingress-nginx
+    app.kubernetes.io/instance: premium-ingress-nginx
+    app.kubernetes.io/name: premium-ingress-nginx
+    app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
-  name: posthog-ingress-nginx-controller-admission
-  namespace: posthog-ingress-nginx
+  name: premium-ingress-nginx-controller-admission
+  namespace: premium-ingress-nginx
 spec:
   ports:
   - appProtocol: https
@@ -394,8 +394,8 @@ spec:
     targetPort: webhook
   selector:
     app.kubernetes.io/component: controller
-    app.kubernetes.io/instance: posthog-ingress-nginx
-    app.kubernetes.io/name: posthog-ingress-nginx
+    app.kubernetes.io/instance: premium-ingress-nginx
+    app.kubernetes.io/name: premium-ingress-nginx
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -403,27 +403,27 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/component: controller
-    app.kubernetes.io/instance: posthog-ingress-nginx
-    app.kubernetes.io/name: posthog-ingress-nginx
-    app.kubernetes.io/part-of: posthog-ingress-nginx
+    app.kubernetes.io/instance: premium-ingress-nginx
+    app.kubernetes.io/name: premium-ingress-nginx
+    app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
-  name: posthog-ingress-nginx-controller
-  namespace: posthog-ingress-nginx
+  name: premium-ingress-nginx-controller
+  namespace: premium-ingress-nginx
 spec:
-  replicas: 2
+  replicas: 1
   minReadySeconds: 0
   revisionHistoryLimit: 10
   selector:
     matchLabels:
       app.kubernetes.io/component: controller
-      app.kubernetes.io/instance: posthog-ingress-nginx
-      app.kubernetes.io/name: posthog-ingress-nginx
+      app.kubernetes.io/instance: premium-ingress-nginx
+      app.kubernetes.io/name: premium-ingress-nginx
   template:
     metadata:
       labels:
         app.kubernetes.io/component: controller
-        app.kubernetes.io/instance: posthog-ingress-nginx
-        app.kubernetes.io/name: posthog-ingress-nginx
+        app.kubernetes.io/instance: premium-ingress-nginx
+        app.kubernetes.io/name: premium-ingress-nginx
       annotations:
         config.linkerd.io/trace-collector: collector.linkerd-jaeger.svc.cluster.local:55678
     spec:
@@ -447,8 +447,8 @@ spec:
               - key: app
                 operator: In
                 values:
-                - grafana-ingress-nginx
                 - premium-ingress-nginx
+                - grafana-ingress-nginx
                 - posthog-ingress-nginx
                 - ingress-nginx
                 - context-server
@@ -468,11 +468,11 @@ spec:
       containers:
       - args:
         - /nginx-ingress-controller
-        - --publish-service=$(POD_NAMESPACE)/posthog-ingress-nginx-controller
-        - --election-id=posthog-ingress-nginx-leader
-        - --controller-class=k8s.io/posthog-ingress-nginx
-        - --ingress-class=posthog-nginx
-        - --configmap=$(POD_NAMESPACE)/posthog-ingress-nginx-controller
+        - --publish-service=$(POD_NAMESPACE)/premium-ingress-nginx-controller
+        - --election-id=premium-ingress-nginx-leader
+        - --controller-class=k8s.io/premium-ingress-nginx
+        - --ingress-class=premium-nginx
+        - --configmap=$(POD_NAMESPACE)/premium-ingress-nginx-controller
         - --validating-webhook=:8443
         - --validating-webhook-certificate=/usr/local/certificates/cert
         - --validating-webhook-key=/usr/local/certificates/key
@@ -546,41 +546,41 @@ spec:
       dnsPolicy: ClusterFirst
       nodeSelector:
         kubernetes.io/os: linux
-      serviceAccountName: posthog-ingress-nginx
+      serviceAccountName: premium-ingress-nginx
       terminationGracePeriodSeconds: 300
       volumes:
       - name: webhook-cert
         secret:
-          secretName: posthog-ingress-nginx-admission
+          secretName: premium-ingress-nginx-admission
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
   labels:
     app.kubernetes.io/component: admission-webhook
-    app.kubernetes.io/instance: posthog-ingress-nginx
-    app.kubernetes.io/name: posthog-ingress-nginx
-    app.kubernetes.io/part-of: posthog-ingress-nginx
+    app.kubernetes.io/instance: premium-ingress-nginx
+    app.kubernetes.io/name: premium-ingress-nginx
+    app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
-  name: posthog-ingress-nginx-admission-create
-  namespace: posthog-ingress-nginx
+  name: premium-ingress-nginx-admission-create
+  namespace: premium-ingress-nginx
 spec:
   template:
     metadata:
       labels:
         app.kubernetes.io/component: admission-webhook
-        app.kubernetes.io/instance: posthog-ingress-nginx
-        app.kubernetes.io/name: posthog-ingress-nginx
-        app.kubernetes.io/part-of: posthog-ingress-nginx
+        app.kubernetes.io/instance: premium-ingress-nginx
+        app.kubernetes.io/name: premium-ingress-nginx
+        app.kubernetes.io/part-of: premium-ingress-nginx
         app.kubernetes.io/version: 1.6.4
-      name: posthog-ingress-nginx-admission-create
+      name: premium-ingress-nginx-admission-create
     spec:
       containers:
       - args:
         - create
-        - --host=posthog-ingress-nginx-controller-admission,posthog-ingress-nginx-controller-admission.$(POD_NAMESPACE).svc
+        - --host=premium-ingress-nginx-controller-admission,premium-ingress-nginx-controller-admission.$(POD_NAMESPACE).svc
         - --namespace=$(POD_NAMESPACE)
-        - --secret-name=posthog-ingress-nginx-admission
+        - --secret-name=premium-ingress-nginx-admission
         env:
         - name: POD_NAMESPACE
           valueFrom:
@@ -598,37 +598,37 @@ spec:
         fsGroup: 2000
         runAsNonRoot: true
         runAsUser: 2000
-      serviceAccountName: posthog-ingress-nginx-admission
+      serviceAccountName: premium-ingress-nginx-admission
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
   labels:
     app.kubernetes.io/component: admission-webhook
-    app.kubernetes.io/instance: posthog-ingress-nginx
-    app.kubernetes.io/name: posthog-ingress-nginx
-    app.kubernetes.io/part-of: posthog-ingress-nginx
+    app.kubernetes.io/instance: premium-ingress-nginx
+    app.kubernetes.io/name: premium-ingress-nginx
+    app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
-  name: posthog-ingress-nginx-admission-patch
-  namespace: posthog-ingress-nginx
+  name: premium-ingress-nginx-admission-patch
+  namespace: premium-ingress-nginx
 spec:
   template:
     metadata:
       labels:
         app.kubernetes.io/component: admission-webhook
-        app.kubernetes.io/instance: posthog-ingress-nginx
-        app.kubernetes.io/name: posthog-ingress-nginx
-        app.kubernetes.io/part-of: posthog-ingress-nginx
+        app.kubernetes.io/instance: premium-ingress-nginx
+        app.kubernetes.io/name: premium-ingress-nginx
+        app.kubernetes.io/part-of: premium-ingress-nginx
         app.kubernetes.io/version: 1.6.4
-      name: posthog-ingress-nginx-admission-patch
+      name: premium-ingress-nginx-admission-patch
     spec:
       containers:
       - args:
         - patch
-        - --webhook-name=posthog-ingress-nginx-admission
+        - --webhook-name=premium-ingress-nginx-admission
         - --namespace=$(POD_NAMESPACE)
         - --patch-mutating=false
-        - --secret-name=posthog-ingress-nginx-admission
+        - --secret-name=premium-ingress-nginx-admission
         - --patch-failure-policy=Fail
         env:
         - name: POD_NAMESPACE
@@ -647,38 +647,38 @@ spec:
         fsGroup: 2000
         runAsNonRoot: true
         runAsUser: 2000
-      serviceAccountName: posthog-ingress-nginx-admission
+      serviceAccountName: premium-ingress-nginx-admission
 ---
 apiVersion: networking.k8s.io/v1
 kind: IngressClass
 metadata:
   labels:
     app.kubernetes.io/component: controller
-    app.kubernetes.io/instance: posthog-ingress-nginx
-    app.kubernetes.io/name: posthog-ingress-nginx
-    app.kubernetes.io/part-of: posthog-ingress-nginx
+    app.kubernetes.io/instance: premium-ingress-nginx
+    app.kubernetes.io/name: premium-ingress-nginx
+    app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
-  name: posthog-nginx
+  name: premium-nginx
 spec:
-  controller: k8s.io/posthog-ingress-nginx
+  controller: k8s.io/premium-ingress-nginx
 ---
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
   labels:
     app.kubernetes.io/component: admission-webhook
-    app.kubernetes.io/instance: posthog-ingress-nginx
-    app.kubernetes.io/name: posthog-ingress-nginx
-    app.kubernetes.io/part-of: posthog-ingress-nginx
+    app.kubernetes.io/instance: premium-ingress-nginx
+    app.kubernetes.io/name: premium-ingress-nginx
+    app.kubernetes.io/part-of: premium-ingress-nginx
     app.kubernetes.io/version: 1.6.4
-  name: posthog-ingress-nginx-admission
+  name: premium-ingress-nginx-admission
 webhooks:
 - admissionReviewVersions:
   - v1
   clientConfig:
     service:
-      name: posthog-ingress-nginx-controller-admission
-      namespace: posthog-ingress-nginx
+      name: premium-ingress-nginx-controller-admission
+      namespace: premium-ingress-nginx
       path: /networking/v1/ingresses
   failurePolicy: Fail
   matchPolicy: Equivalent
@@ -698,8 +698,8 @@ webhooks:
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: posthog-ingress-nginx-podmonitor
-  namespace: posthog-ingress-nginx
+  name: premium-ingress-nginx-podmonitor
+  namespace: premium-ingress-nginx
   labels:
     app.kubernetes.io/part-of: compose
 spec:
@@ -708,13 +708,13 @@ spec:
       targetPort: 10254
   namespaceSelector:
     matchNames:
-      - posthog-ingress-nginx
+      - premium-ingress-nginx
   selector:
     matchExpressions:
       - key: app.kubernetes.io/name
         operator: In
         values:
-          - posthog-ingress-nginx
+          - premium-ingress-nginx
       - key: compose.ai/ignore-monitoring
         operator: DoesNotExist
         values:

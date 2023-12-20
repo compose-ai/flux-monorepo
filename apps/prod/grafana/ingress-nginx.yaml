@@ -447,6 +447,7 @@ spec:
               - key: app
                 operator: In
                 values:
+                - premium-ingress-nginx
                 - grafana-ingress-nginx
                 - posthog-ingress-nginx
                 - ingress-nginx
