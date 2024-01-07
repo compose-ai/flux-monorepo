@@ -1,0 +1,3 @@
+prometheusUrl: http://prometheus-kube-prometheus-prometheus.metrics.svc.cluster.local:9090
+prometheus:
+  enabled: false
