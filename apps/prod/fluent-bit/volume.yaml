@@ -10,7 +10,7 @@ spec:
   resources:
     requests:
       storage: 10Gi
-  storageClassName: azureblob-fuse-premium
+  storageClassName: azureblob-fuse-standard-grs
   volumeName: "fluent-bit-output"
 ---
 apiVersion: v1
@@ -18,7 +18,7 @@ kind: PersistentVolume
 metadata:
   name: fluent-bit-output
 spec:
-  storageClassName: azureblob-fuse-premium
+  storageClassName: azureblob-fuse-standard-grs
   accessModes:
   - ReadWriteMany
   resources:

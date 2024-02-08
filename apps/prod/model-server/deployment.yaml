@@ -119,7 +119,7 @@ spec:
   resources:
     requests:
       storage: 10Gi
-  storageClassName: azureblob-fuse-premium
+  storageClassName: azureblob-fuse-standard-grs
   volumeName: "model-csi-gcs-pv"
 ---
 apiVersion: v1
@@ -130,7 +130,7 @@ metadata:
   annotations:
     pv.beta.kubernetes.io/gid: "1001"
 spec:
-  storageClassName: azureblob-fuse-premium
+  storageClassName: azureblob-fuse-standard-grs
   accessModes:
   - ReadWriteMany
   resources:

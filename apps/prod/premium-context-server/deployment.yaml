@@ -115,7 +115,7 @@ spec:
   resources:
     requests:
       storage: 50Gi
-  storageClassName: azureblob-fuse-premium
+  storageClassName: azureblob-fuse-standard-grs
   # Make sure this is globally unique or you may run into issues with deploying
   volumeName: "model-csi-gcs-pv-context-premium"
 ---
@@ -126,7 +126,7 @@ metadata:
   annotations:
     pv.beta.kubernetes.io/gid: "1002"
 spec:
-  storageClassName: azureblob-fuse-premium
+  storageClassName: azureblob-fuse-standard-grs
   accessModes:
   - ReadWriteMany
   resources:

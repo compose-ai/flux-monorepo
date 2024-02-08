@@ -111,7 +111,7 @@ spec:
   resources:
     requests:
       storage: 50Gi
-  storageClassName: azureblob-fuse-premium
+  storageClassName: azureblob-fuse-standard-grs
   volumeName: "model-csi-gcs-pv-context"
 ---
 apiVersion: v1
@@ -122,7 +122,7 @@ metadata:
     pv.beta.kubernetes.io/gid: "1002"
   namespace: context-server
 spec:
-  storageClassName: azureblob-fuse-premium
+  storageClassName: azureblob-fuse-standard-grs
   accessModes:
   - ReadWriteMany
   resources:

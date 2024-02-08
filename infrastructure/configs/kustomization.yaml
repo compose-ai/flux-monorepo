@@ -4,3 +4,4 @@ resources:
   - network-policies.yaml
   - posthog-alerts.yaml
   - redis-alerts.yaml
+  - storage-class.yaml
