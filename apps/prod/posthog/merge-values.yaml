@@ -166,6 +166,7 @@ spec:
         # -- Enable data persistence using PVC.
         enabled: true
 
+        storageClassName: managed-csi-premium
         # -- Persistent Volume size
         size: 500Gi
       # We probably could update the backup script and do incremental backups by using the new scripts from here with the newest image too
@@ -174,6 +175,8 @@ spec:
         enabled: true
         gcsSecret: gcs-secret
         env:
+          - name: "REMOTE_STORAGE"
+            value: "azblob"
           - name: ALLOW_EMPTY_BACKUPS
             value: "true"
           - name: API_LISTEN
@@ -183,17 +186,17 @@ spec:
             value: "true"
           - name: BACKUPS_TO_KEEP_REMOTE
             value: "0"
-          - name: "REMOTE_STORAGE"
-            value: "gcs"
-          - name: GOOGLE_APPLICATION_CREDENTIALS
-            value: /var/secrets/google/key.json
-          - name: "GCS_BUCKET"
+          - name: AZBLOB_USE_MANAGED_IDENTITY
+            value: "true"
+          - name: AZBLOB_ACCOUNT_NAME
+            value: "composeclusterprod"
+          - name: "AZBLOB_CONTAINER"
             value: "composeai_clickhouse_backups"
-          - name: "GCS_PATH"
+          - name: "AZBLOB_PATH"
             value: "backup/{cluster}/{shard}"
-          - name: "GCS_OBJECT_DISK_PATH"
+          - name: "AZBLOB_OBJECT_DISK_PATH"
             value: "object_disks/{cluster}/{shard}"
-          - name: "GCS_DEBUG"
+          - name: "AZBLOB_DEBUG"
             value: "true"
     hooks:
       nodeSelector:

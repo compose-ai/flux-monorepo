@@ -10,22 +10,23 @@ spec:
   resources:
     requests:
       storage: 10Gi
-  storageClassName: model-csi-gcs-sc
+  storageClassName: azureblob-fuse-premium
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: model-csi-gcs-pv-fluent
+  name: fluent-bit-output
 spec:
+  storageClassName: azureblob-fuse-premium
   accessModes:
   - ReadWriteMany
-  capacity:
-    storage: 10Gi
+  resources:
+    requests:
+      storage: 10Gi
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: model-csi-gcs-sc
   csi:
-    driver: gcs.csi.ofek.dev
-    volumeHandle: csi-gcs
-    nodePublishSecretRef:
-      name: csi-gcs-secret
-      namespace: metrics
+    # Make sure this is globally unique or you may run into issues with volumes mounting / attaching
+    volumeHandle: fluent-output
+    volumeAttributes:
+      storageAccount: composeclusterprod
+      containerName: fluent-bit-output

@@ -97,7 +97,7 @@ spec:
   resources:
     requests:
       storage: 10Gi
-  storageClassName: model-csi-gcs-sc
+  storageClassName: azureblob-fuse-premium
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -105,23 +105,23 @@ metadata:
   name: model-csi-gcs-pv-context
   annotations:
     pv.beta.kubernetes.io/gid: "1002"
+  namespace: context-server
 spec:
+  storageClassName: azureblob-fuse-premium
   accessModes:
   - ReadWriteMany
-  capacity:
-    storage: 10Gi
+  resources:
+    requests:
+      storage: 50Gi
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: model-csi-gcs-sc
   csi:
-    driver: gcs.csi.ofek.dev
-    volumeHandle: csi-gcs
-    nodePublishSecretRef:
-      name: csi-gcs-secret
-      namespace: context-server
+    # Make sure this is globally unique or you may run into issues with volumes mounting / attaching
+    volumeHandle: context-model-directory
     volumeAttributes:
+      storageAccount: composeclusterprod
+      containerName: model-server-models
       gid: "1002"
       uid: "1002"
       dirMode: "0775"
       fileMode: "0664"
       implicitDirs: "true"
----

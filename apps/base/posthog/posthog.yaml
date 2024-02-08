@@ -208,7 +208,7 @@ spec:
       tag: becc5127ec4e322aa13814542bf887764e2ef3af
 
     # -- Cloud service being deployed on (example: `aws`, `azure`, `do`, `gcp`, `other`).
-    cloud: "gcp"
+    cloud: "azure"
     
     # -- Notification email for notifications to be sent to from the PostHog stack
     notificationEmail: "robot@compose.ai"
