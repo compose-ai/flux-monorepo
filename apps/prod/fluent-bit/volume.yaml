@@ -31,3 +31,6 @@ spec:
     volumeAttributes:
       storageAccount: composeclusterprod
       containerName: fluent-bit-output
+    nodeStageSecretRef:
+      name: azure-fluent-storage-secret
+      namespace: metrics

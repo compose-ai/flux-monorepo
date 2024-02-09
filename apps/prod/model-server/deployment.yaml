@@ -148,3 +148,6 @@ spec:
       dirMode: "0775"
       fileMode: "0664"
       implicitDirs: "true"
+    nodeStageSecretRef:
+      name: azure-model-storage-secret
+      namespace: default
