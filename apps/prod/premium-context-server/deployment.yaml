@@ -129,11 +129,11 @@ spec:
   storageClassName: azureblob-fuse-standard-grs
   accessModes:
   - ReadWriteMany
-  resources:
-    requests:
-      storage: 50Gi
+  capacity:
+    storage: 50Gi
   persistentVolumeReclaimPolicy: Retain
   csi:
+    driver: blob.csi.azure.com
     # Make sure this is globally unique or you may run into issues with volumes mounting / attaching
     volumeHandle: premium-context-model-directory
     volumeAttributes:
