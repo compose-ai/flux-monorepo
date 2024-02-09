@@ -36,7 +36,7 @@ spec:
   # https://github.com/compose-ai/charts-clickhouse/blob/main/charts/posthog/values.yaml
   values:
     nodeSelector:
-      compose.ai/nodepool: posthog
+      cloud.google.com/gke-nodepool: posthog
     tolerations:
       - key: "posthog"
         operator: "Exists"
@@ -90,7 +90,7 @@ spec:
   # https://github.com/compose-ai/charts-clickhouse/blob/main/charts/posthog/values.yaml
   values:
     nodeSelector:
-      compose.ai/nodepool: posthog
+      cloud.google.com/gke-nodepool: posthog
     tolerations:
       - key: "posthog"
         operator: "Exists"
@@ -149,7 +149,7 @@ spec:
   # https://github.com/compose-ai/charts-clickhouse/blob/main/charts/posthog/values.yaml
   values:
     nodeSelector:
-      compose.ai/nodepool: posthog
+      cloud.google.com/gke-nodepool: posthog
     tolerations:
       - key: "posthog"
         operator: "Exists"
