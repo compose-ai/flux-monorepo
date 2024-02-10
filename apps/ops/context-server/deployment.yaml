@@ -37,7 +37,7 @@ spec:
             topologyKey: "kubernetes.io/hostname"
       containers:
         - name: context-server
-          image: us-docker.pkg.dev/compose-cluster/compose-ai-server/context-server:release-1c39466
+          image: composecluster.azurecr.io/context-server:release-6fb52e3
           imagePullPolicy: IfNotPresent
           resources:
             requests:
