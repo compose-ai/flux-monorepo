@@ -8,7 +8,7 @@ spec:
   values:
     # -- Site url specifies the canonical URL root the site can be accessed using.
     # This is used to e.g. generate shareable links to Dashboards.
-    siteUrl: "https://posthog.prod.cluster.compose.ai"
+    siteUrl: "https://posthog.azure-prod.cluster.compose.ai"
 
     web:
       env:
@@ -211,4 +211,4 @@ spec:
       type: "posthog-nginx"
       annotations:
         kubernetes.io/ingress.class: "posthog-nginx"
-      hostname: "posthog.prod.cluster.compose.ai"
+      hostname: "posthog.azure-prod.cluster.compose.ai"
