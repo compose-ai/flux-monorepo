@@ -173,7 +173,6 @@ spec:
       # https://github.com/Altinity/clickhouse-backup/tree/master
       backup:
         enabled: true
-        gcsSecret: gcs-secret
         env:
           - name: "REMOTE_STORAGE"
             value: "azblob"
@@ -191,7 +190,7 @@ spec:
           - name: AZBLOB_ACCOUNT_NAME
             value: "composeclusterprod"
           - name: "AZBLOB_CONTAINER"
-            value: "composeai_clickhouse_backups"
+            value: "composeai-clickhouse-backups"
           - name: "AZBLOB_PATH"
             value: "backup/{cluster}/{shard}"
           - name: "AZBLOB_OBJECT_DISK_PATH"
