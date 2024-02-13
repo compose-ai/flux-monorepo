@@ -25,6 +25,11 @@ spec:
     spec:
       nodeSelector:
         cloud.google.com/gke-nodepool: compose
+      tolerations:
+        - key: "sku"
+          operator: "Equal"
+          value: "gpu"
+          effect: "NoSchedule"
       containers:
         - name: model-server
           image: composecluster.azurecr.io/compose-triton:release-8b0640c
