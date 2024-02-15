@@ -8,10 +8,6 @@ resources:
   - ../base/posthog
   - posthog
   - grafana
-  - context-server
-  - premium-context-server
-  - model-server
-  - premium-model-server
   - fluent-bit
 patchesStrategicMerge:
   - posthog/merge-values.yaml
