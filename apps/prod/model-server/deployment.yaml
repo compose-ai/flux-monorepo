@@ -92,9 +92,6 @@ spec:
               readOnly: false
             - mountPath: /dev/shm
               name: dshm
-          securityContext:
-            runAsUser: 1001
-            runAsGroup: 1001
       volumes:
         # The name of this volume must be fluentbitonlylogs for fluent bit to be able to find all the logs files
         - name: fluentbitonlylogs
@@ -110,8 +107,6 @@ spec:
           emptyDir:
             medium: Memory
             sizeLimit: 1Gi
-      securityContext:
-        fsGroup: 1001
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -132,8 +127,6 @@ kind: PersistentVolume
 metadata:
   name: model-csi-gcs-pv
   namespace: model-server
-  annotations:
-    pv.beta.kubernetes.io/gid: "1001"
 spec:
   storageClassName: azureblob-fuse-standard-grs
   accessModes:
@@ -148,11 +141,6 @@ spec:
     volumeAttributes:
       storageAccount: composeclusterprod
       containerName: model-server-models
-      gid: "1001"
-      uid: "1001"
-      dirMode: "0775"
-      fileMode: "0664"
-      implicitDirs: "true"
     nodeStageSecretRef:
       name: azure-model-storage-secret
       namespace: default
