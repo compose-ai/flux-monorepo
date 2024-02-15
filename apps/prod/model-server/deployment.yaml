@@ -33,7 +33,7 @@ spec:
           effect: "NoSchedule"
       containers:
         - name: model-server
-          image: composecluster.azurecr.io/compose-triton:release-78d86a0
+          image: composecluster.azurecr.io/compose-triton:release-f75645b
           imagePullPolicy: IfNotPresent
           resources:
             requests:
