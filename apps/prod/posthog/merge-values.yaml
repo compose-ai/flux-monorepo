@@ -173,6 +173,7 @@ spec:
       # https://github.com/Altinity/clickhouse-backup/tree/master
       backup:
         enabled: true
+	clickhouse_services: "chi-posthog-posthog-0-0,chi-posthog-posthog-1-0,chi-posthog-posthog-2-0,chi-posthog-posthog-3-0,chi-posthog-posthog-4-0"
         env:
           - name: "REMOTE_STORAGE"
             value: "azblob"
