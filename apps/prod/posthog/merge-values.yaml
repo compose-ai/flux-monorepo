@@ -168,7 +168,7 @@ spec:
 
         storageClassName: managed-csi-premium
         # -- Persistent Volume size
-        size: 500Gi
+        size: 700Gi
       # We probably could update the backup script and do incremental backups by using the new scripts from here with the newest image too
       # https://github.com/Altinity/clickhouse-backup/tree/master
       backup:
