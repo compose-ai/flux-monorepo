@@ -4,10 +4,10 @@ resources:
   - ../base/csi-driver
   - ../base/loki
   - ../base/flux
-  - ../base/nvidia-dcgm
+  #- ../base/nvidia-dcgm
   - ../base/posthog
   - posthog
   - grafana
-  - fluent-bit
+  #- fluent-bit
 patchesStrategicMerge:
   - posthog/merge-values.yaml
