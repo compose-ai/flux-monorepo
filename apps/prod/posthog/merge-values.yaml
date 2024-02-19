@@ -161,7 +161,7 @@ spec:
           effect: "NoSchedule"
       layout:
         shardsCount: 5
-        replicasCount: 2
+        replicasCount: 1
       persistence:
         # -- Enable data persistence using PVC.
         enabled: true
