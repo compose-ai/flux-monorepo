@@ -212,4 +212,4 @@ spec:
       type: "posthog-nginx"
       annotations:
         kubernetes.io/ingress.class: "posthog-nginx"
-      hostname: "posthog.azure-prod.cluster.compose.ai"
+      hostname: "posthog.prod.cluster.compose.ai"
